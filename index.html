@@ -674,7 +674,8 @@ thead th{
   letter-spacing:.04em;
   text-transform:uppercase;
   border-radius:999px;
-  padding:.28rem .45rem;
+  padding:.28rem .65rem;
+  white-space:nowrap;
   cursor:pointer;
 }
 .expense-inline-btn:hover{
@@ -971,7 +972,7 @@ input[type=checkbox]{
     <div class="sync-actions">
       <div class="sync-pill">
         <span class="sync-pill-label">Savings Goal</span>
-        <input id="savings-goal" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$0" oninput="updateSavingsGoal(this.value)"/>
+        <input id="savings-goal" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$0" oninput="updateSavingsGoal(this.value)" onblur="formatAmountInput(this)"/>
       </div>
       <button id="sync-btn" onclick="manualSave()">Save</button>
       <div class="sync-status-stack">
@@ -1526,8 +1527,13 @@ function renderAll(){
   refreshMonthLabel();updateStats();updateCharts();refreshSyncTimestamp();
 }
 
+function formatAmountInput(el){
+  const v=parseFloat(el.value);
+  if(!isNaN(v)&&el.value.trim()!=='')el.value=v.toFixed(2);
+}
 function inp(val,type,placeholder){
-  return `<input type="${type||'text'}" value="${esc(val)}" placeholder="${esc(placeholder||'')}" oninput="onInput(this)"/>`;
+  const blur=type==='number'?' onblur="formatAmountInput(this)"':'';
+  return `<input type="${type||'text'}" value="${esc(val)}" placeholder="${esc(placeholder||'')}" oninput="onInput(this)"${blur}/>`;
 }
 function esc(v){return String(v||'').replace(/"/g,'&quot;')}
 function numCell(val,placeholder){return `<td>${inp(val,'number',placeholder)}</td>`}
@@ -1545,6 +1551,15 @@ function renderBills(){
   dollar('bills-a-total',sum(data.bills,'amount'));
 }
 function renderExpenses(){
+  data.expenses.forEach(r=>{
+    r.items.sort((a,b)=>{
+      if(!a.date&&!b.date)return 0;
+      if(!a.date)return -1;
+      if(!b.date)return 1;
+      return b.date.localeCompare(a.date);
+    });
+  });
+  data.expenses.sort((a,b)=>(b.lastModified||0)-(a.lastModified||0));
   document.getElementById('expenses-body').innerHTML=data.expenses.map((r,i)=>{
     const total=expenseCategoryTotal(r);
     const count=expenseFilledCount(r);
@@ -1573,7 +1588,7 @@ function renderExpenses(){
         </div>
       </td>
       <td><input data-i="${i}" data-j="${j}" data-field="date" type="date" value="${esc(item.date)}" oninput="onExpenseItemInput(this)"/></td>
-      <td><input data-i="${i}" data-j="${j}" data-field="amount" type="number" value="${esc(item.amount)}" placeholder="0.00" oninput="onExpenseItemInput(this)"/></td>
+      <td><input data-i="${i}" data-j="${j}" data-field="amount" type="number" value="${esc(item.amount)}" placeholder="0.00" oninput="onExpenseItemInput(this)" onblur="formatAmountInput(this)"/></td>
       <td><button type="button" class="expense-delete-btn" onclick="delExpenseTransaction(${i},${j})" title="remove transaction">✕</button></td>
     </tr>`).join(''):'';
     return parent+children;
@@ -1740,6 +1755,7 @@ function toggleExpenseGroup(i){
 function addExpenseTransaction(i){
   data.expenses[i].open=true;
   data.expenses[i].items.push(emptyExpenseItem());
+  data.expenses[i].lastModified=Date.now();
   saveData();
   renderExpenses();
   updateStats();
