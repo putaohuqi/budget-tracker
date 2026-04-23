@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Monthly Budget Tracker ✨</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#e8b4b8;--pink-light:#eecdd0;--pink-pale:#faf0f1;--pink-deep:#b87a80;
+  --green:#c4a8a8;--green-light:#d9c0c0;--green-pale:#f5eeee;--green-deep:#7a5a5a;
+  --accent:#c4888e;--accent2:#a86e74;
+  --cream:#fdf6f6;--cream2:#f7eeed;
+  --text:#3a2a2a;--text2:#7a5a5a;--text3:#b09090;
+  --white:#ffffff;
+  --shadow:0 2px 12px rgba(180,120,125,0.10);
+  --radius:12px;--radius-lg:18px;
+}
+html{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text);font-size:14px}
+body{min-height:100vh}
+
+/* ── HEADER ── */
+.page-header{
+  background:linear-gradient(135deg,var(--pink-pale) 0%,var(--green-pale) 100%);
+  padding:2.5rem 2rem 2rem;text-align:center;
+  border-bottom:1.5px solid var(--pink-light);
+  position:relative;overflow:visible;
+}
+.page-header::before,.page-header::after{
+  content:'';position:absolute;border-radius:50%;opacity:.18;pointer-events:none;
+}
+.page-header::before{width:260px;height:260px;background:var(--pink);top:-80px;left:-60px}
+.page-header::after{width:200px;height:200px;background:var(--green);bottom:-60px;right:-40px}
+.header-eyebrow{font-family:'DM Serif Display',serif;font-style:italic;font-size:1rem;color:var(--text2);letter-spacing:.08em;margin-bottom:.25rem}
+.header-title{font-family:'DM Serif Display',serif;font-size:3.2rem;color:var(--accent);line-height:1;margin-bottom:.15rem}
+.header-sub{font-family:'DM Serif Display',serif;font-style:italic;font-size:1.3rem;color:var(--green-deep);letter-spacing:.15em}
+.month-selector{margin-top:1.2rem;display:inline-flex;align-items:center;gap:.75rem;background:var(--white);border:1.5px solid var(--pink-light);border-radius:999px;padding:.4rem 1.2rem;box-shadow:var(--shadow)}
+.month-selector select{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;color:var(--green-deep);border:none;background:transparent;outline:none;cursor:pointer}
+.month-selector label{font-size:.8rem;font-weight:600;color:var(--text3)}
+
+/* ── AUTH WIDGET ── */
+#auth-widget{
+  position:absolute;top:1rem;right:1.25rem;z-index:100;
+}
+#auth-open-btn{
+  font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;
+  padding:.4rem 1rem;border:1.5px solid var(--pink-light);border-radius:999px;
+  background:var(--white);color:var(--text2);cursor:pointer;
+  box-shadow:var(--shadow);transition:all .2s;
+}
+#auth-open-btn:hover{background:var(--pink-pale);border-color:var(--accent);color:var(--accent)}
+#auth-user-info{
+  display:none;align-items:center;gap:.6rem;
+  background:var(--white);border:1.5px solid var(--pink-light);
+  border-radius:999px;padding:.35rem .75rem .35rem 1rem;
+  box-shadow:var(--shadow);
+}
+#auth-user-email{font-size:.75rem;font-weight:700;color:var(--text2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#auth-signout-btn{
+  font-family:'Nunito',sans-serif;font-size:.72rem;font-weight:700;
+  padding:.25rem .7rem;border:1.5px solid var(--pink-light);border-radius:999px;
+  background:none;color:var(--text3);cursor:pointer;transition:all .2s;white-space:nowrap;
+}
+#auth-signout-btn:hover{background:var(--pink-pale);color:var(--pink-deep)}
+
+/* ── AUTH DROPDOWN PANEL ── */
+#auth-panel{
+  display:none;position:absolute;top:calc(100% + .5rem);right:0;
+  width:280px;background:var(--white);
+  border:1.5px solid var(--pink-light);border-radius:var(--radius-lg);
+  box-shadow:0 8px 32px rgba(180,120,125,0.18);
+  padding:1.25rem;
+}
+.auth-tabs{display:flex;gap:.4rem;margin-bottom:1rem}
+.auth-tab{
+  flex:1;padding:.38rem;border:1.5px solid var(--pink-light);border-radius:999px;
+  background:none;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;
+  color:var(--text3);cursor:pointer;transition:all .18s;
+}
+.auth-tab.active{background:var(--accent);border-color:var(--accent);color:var(--white)}
+.auth-form{display:flex;flex-direction:column;gap:.6rem}
+.auth-field label{display:block;font-size:.7rem;font-weight:700;color:var(--text2);margin-bottom:.2rem}
+.auth-input{
+  font-family:'Nunito',sans-serif;font-size:.82rem;width:100%;
+  padding:.5rem .7rem;border:1.5px solid var(--pink-light);border-radius:var(--radius);
+  background:var(--cream);color:var(--text);outline:none;transition:border-color .2s;
+}
+.auth-input:focus{border-color:var(--accent);background:var(--pink-pale)}
+.auth-submit{
+  margin-top:.2rem;padding:.55rem;background:var(--accent);color:var(--white);
+  border:none;border-radius:999px;font-family:'Nunito',sans-serif;
+  font-size:.82rem;font-weight:800;cursor:pointer;transition:background .2s;
+}
+.auth-submit:hover{background:var(--accent2)}
+.auth-error{
+  font-size:.72rem;color:#c0444a;background:#fff0f0;
+  border:1px solid #f0c0c0;border-radius:8px;padding:.4rem .6rem;
+  display:none;text-align:center;
+}
+
+/* ── HERO STATS ── */
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:1.5rem 2rem;background:var(--white);border-bottom:1.5px solid var(--pink-light)}
+.hero-card{text-align:center;padding:.75rem 1rem;border-radius:var(--radius);position:relative}
+.hero-card.income{background:var(--green-pale);border:1.5px solid var(--green-light)}
+.hero-card.expenses{background:var(--pink-pale);border:1.5px solid var(--pink-light)}
+.hero-card.left{background:var(--green-pale);border:1.5px solid var(--green-light)}
+.hero-card.savings{background:var(--pink-pale);border:1.5px solid var(--pink-light)}
+.hero-label{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:.2rem}
+.hero-amount{font-family:'DM Serif Display',serif;font-size:1.9rem;color:var(--green-deep)}
+.hero-card.expenses .hero-amount,.hero-card.savings .hero-amount{color:var(--accent)}
+
+/* ── CHARTS ROW ── */
+.charts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;padding:1rem 2rem;background:var(--cream2);border-bottom:1.5px solid var(--pink-light)}
+.chart-card{background:var(--white);border-radius:var(--radius-lg);border:1.5px solid var(--pink-light);padding:1rem;box-shadow:var(--shadow)}
+.chart-title{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.75rem;text-align:center}
+.chart-wrap{position:relative;height:160px;display:flex;align-items:center;justify-content:center}
+.donut-center{position:absolute;text-align:center;pointer-events:none}
+.donut-val{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--green-deep)}
+.donut-lbl{font-size:.65rem;color:var(--text3);font-weight:700}
+
+/* ── MAIN GRID ── */
+.main-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;padding:1.5rem 2rem;align-items:start}
+@media(max-width:900px){.main-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.main-grid{grid-template-columns:1fr}}
+
+/* ── SECTION CARDS ── */
+.section-card{background:var(--white);border-radius:var(--radius-lg);border:1.5px solid var(--pink-light);box-shadow:var(--shadow);overflow:hidden}
+.section-card.wide{grid-column:span 2}
+.section-head{padding:.6rem 1rem;text-align:center;font-family:'DM Serif Display',serif;font-size:1.1rem}
+.section-head.green{background:var(--accent);color:var(--white)}
+.section-head.pink{background:var(--pink-light);color:var(--pink-deep)}
+
+/* ── TABLES ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead th{background:var(--green-pale);color:var(--green-deep);font-weight:800;text-transform:uppercase;font-size:.65rem;letter-spacing:.06em;padding:.45rem .6rem;text-align:left;border-bottom:1.5px solid var(--green-light)}
+.pink-head thead th{background:var(--pink-pale);color:var(--accent);border-bottom-color:var(--pink-light)}
+tbody tr:nth-child(even){background:var(--cream)}
+tbody tr:hover{background:var(--pink-pale);transition:background .12s}
+td{padding:.4rem .6rem;border-bottom:.5px solid #e8dede;color:var(--text);vertical-align:middle}
+td.num{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+td.pos{color:var(--green-deep)}
+td.neg{color:var(--accent)}
+tfoot td{padding:.5rem .6rem;font-weight:800;font-size:.8rem;border-top:1.5px solid var(--pink-light);background:var(--cream)}
+tfoot td.num{text-align:right}
+input[type=text],input[type=number],input[type=date]{
+  font-family:'Nunito',sans-serif;font-size:.8rem;width:100%;padding:.3rem .4rem;
+  border:.5px solid #d8c8c8;border-radius:6px;background:transparent;color:var(--text);
+  outline:none;transition:border-color .2s
+}
+input:focus{border-color:var(--accent);background:var(--pink-pale)}
+input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;cursor:pointer}
+.add-row-btn{width:100%;padding:.4rem;background:none;border:none;border-top:.5px solid #eee;cursor:pointer;color:var(--text3);font-size:.75rem;font-weight:700;font-family:'Nunito',sans-serif;transition:background .15s,color .15s}
+.add-row-btn:hover{background:var(--pink-pale);color:var(--pink-deep)}
+
+/* ── COLLAPSIBLE ── */
+.section-head{cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem}
+.section-head-title{font-family:'DM Serif Display',serif;font-size:1.1rem;flex:1;text-align:center}
+.section-chevron{font-size:.75rem;transition:transform .25s ease;display:inline-block;min-width:14px}
+.section-body{overflow:hidden;transition:max-height .3s ease,opacity .2s ease;max-height:2000px;opacity:1}
+.section-body.collapsed{max-height:0;opacity:0}
+.section-head:hover{filter:brightness(.96)}
+
+/* ── FOOTER ── */
+.page-footer{text-align:center;padding:1.5rem 2rem;font-size:.75rem;color:var(--text3);border-top:1.5px solid var(--pink-light);background:var(--white)}
+.page-footer span{color:var(--pink-deep);font-weight:700}
+#footer-sync{font-size:.7rem;color:var(--text3);margin-left:.4rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .charts-row{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:1fr 1fr}
+  .main-grid{padding:1rem}
+  .header-title{font-size:2.4rem}
+  .hero-stats{padding:1rem}
+  table{font-size:.72rem}
+  td,th{padding:.3rem .4rem}
+  #auth-user-email{max-width:80px}
+}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+
+  <!-- Auth widget top-right -->
+  <div id="auth-widget">
+    <button id="auth-open-btn" onclick="toggleAuthPanel()">Sign In</button>
+    <div id="auth-user-info">
+      <span id="auth-user-email"></span>
+      <button id="auth-signout-btn" onclick="doSignOut()">Sign Out</button>
+    </div>
+
+    <div id="auth-panel">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-signin" onclick="switchAuthMode('signin')">Sign In</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchAuthMode('signup')">Sign Up</button>
+      </div>
+      <div id="auth-error" class="auth-error"></div>
+
+      <div id="form-signin">
+        <div class="auth-form">
+          <div class="auth-field"><label>Email</label><input class="auth-input" id="signin-email" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doSignIn()"/></div>
+          <div class="auth-field"><label>Password</label><input class="auth-input" id="signin-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()"/></div>
+          <button class="auth-submit" onclick="doSignIn()">Sign In</button>
+        </div>
+      </div>
+
+      <div id="form-signup" style="display:none">
+        <div class="auth-form">
+          <div class="auth-field"><label>Email</label><input class="auth-input" id="signup-email" type="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doSignUp()"/></div>
+          <div class="auth-field"><label>Password</label><input class="auth-input" id="signup-pass" type="password" placeholder="Min. 6 characters" onkeydown="if(event.key==='Enter')doSignUp()"/></div>
+          <div class="auth-field"><label>Confirm Password</label><input class="auth-input" id="signup-pass2" type="password" placeholder="Repeat password" onkeydown="if(event.key==='Enter')doSignUp()"/></div>
+          <button class="auth-submit" onclick="doSignUp()">Create Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-eyebrow">The Ultimate</div>
+  <div class="header-title">Monthly Budget</div>
+  <div class="header-sub">T R A C K E R</div>
+  <div class="month-selector">
+    <label>Month</label>
+    <select id="month-select" onchange="switchMonth()">
+      <option value="January">January</option><option value="February">February</option>
+      <option value="March">March</option><option value="April">April</option>
+      <option value="May">May</option><option value="June">June</option>
+      <option value="July">July</option><option value="August">August</option>
+      <option value="September">September</option><option value="October">October</option>
+      <option value="November">November</option><option value="December">December</option>
+    </select>
+    <select id="year-select" onchange="switchMonth()">
+      <option>2024</option><option>2025</option><option selected>2026</option><option>2027</option>
+    </select>
+  </div>
+</header>
+
+<!-- HERO STATS -->
+<section class="hero-stats">
+  <div class="hero-card income"><div class="hero-label">Total Income</div><div class="hero-amount" id="stat-income">$0.00</div></div>
+  <div class="hero-card expenses"><div class="hero-label">Total Expenses</div><div class="hero-amount" id="stat-expenses">$0.00</div></div>
+  <div class="hero-card left"><div class="hero-label">Left to Spend</div><div class="hero-amount" id="stat-left">$0.00</div></div>
+  <div class="hero-card savings"><div class="hero-label">Total Savings</div><div class="hero-amount" id="stat-savings">$0.00</div></div>
+</section>
+
+<!-- CHARTS -->
+<section class="charts-row">
+  <div class="chart-card">
+    <div class="chart-title">Budget vs Actual</div>
+    <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Monthly Bill Breakdown</div>
+    <div class="chart-wrap">
+      <canvas id="pieChart"></canvas>
+      <div class="donut-center"><div class="donut-val" id="pie-center">$0</div><div class="donut-lbl">total bills</div></div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Spending Overview</div>
+    <div class="chart-wrap">
+      <canvas id="donutChart"></canvas>
+      <div class="donut-center"><div class="donut-val" id="donut-center">$0</div><div class="donut-lbl">left to spend</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN DATA GRID -->
+<section class="main-grid">
+
+  <!-- CASH FLOW -->
+  <div class="section-card">
+    <div class="section-head green" onclick="toggleSection('cashflow')">
+      <span style="min-width:14px"></span>
+      <span class="section-head-title">Cash Flow</span>
+      <span class="section-meta" id="cashflow-meta"></span>
+      <span class="section-chevron" id="cashflow-chev">▾</span>
+    </div>
+    <div class="section-body" id="cashflow-body-wrap">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Category</th><th>Budget</th><th>Actual</th><th>Diff</th></tr></thead>
+          <tbody>
+            <tr><td>Income</td><td class="num" id="cf-income-b">$0</td><td class="num" id="cf-income-a">$0</td><td class="num pos" id="cf-income-d">$0</td></tr>
+            <tr><td>Monthly Bills</td><td class="num" id="cf-bills-b">$0</td><td class="num" id="cf-bills-a">$0</td><td class="num" id="cf-bills-d">$0</td></tr>
+            <tr><td>Expenses</td><td class="num" id="cf-exp-b">$0</td><td class="num" id="cf-exp-a">$0</td><td class="num" id="cf-exp-d">$0</td></tr>
+            <tr><td>Subscriptions</td><td class="num" id="cf-sub-b">$0</td><td class="num" id="cf-sub-a">$0</td><td class="num" id="cf-sub-d">$0</td></tr>
+            <tr><td>Savings &amp; Inv.</td><td class="num" id="cf-sav-b">$0</td><td class="num" id="cf-sav-a">$0</td><td class="num" id="cf-sav-d">$0</td></tr>
+            <tr><td>Debts</td><td class="num" id="cf-debt-b">$0</td><td class="num" id="cf-debt-a">$0</td><td class="num" id="cf-debt-d">$0</td></tr>
+          </tbody>
+          <tfoot><tr><td><strong>Left Over</strong></td><td class="num" id="cf-lo-b">$0</td><td class="num" id="cf-lo-a">$0</td><td class="num" id="cf-lo-d">$0</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCOME -->
+  <div class="section-card">
+    <div class="section-head green" onclick="toggleSection('income')">
+      <span style="min-width:14px"></span>
+      <span class="section-head-title">Income</span>
+      <span class="section-meta" style="font-size:.7rem;font-weight:700;min-width:70px;text-align:right" id="income-meta"></span>
+      <span class="section-chevron" id="income-chev">▾</span>
+    </div>
+    <div class="section-body" id="income-body-wrap">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Source</th><th>Date</th><th>Budget</th><th>Actual</th><th></th></tr></thead>
+          <tbody id="income-body"></tbody>
+          <tfoot><tr><td colspan="2"><strong>Total Income</strong></td><td class="num" id="income-b-total">$0</td><td class="num" id="income-a-total">$0</td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addRow('income')">+ Add row</button>
+    </div>
+  </div>
+
+  <!-- MONTHLY BILLS -->
+  <div class="section-card">
+    <div class="section-head pink" onclick="toggleSection('bills')">
+      <span style="min-width:14px"></span>
+      <span class="section-head-title">Monthly Bills</span>
+      <span class="section-meta" style="font-size:.7rem;font-weight:700;min-width:70px;text-align:right" id="bills-meta"></span>
+      <span class="section-chevron" id="bills-chev">▾</span>
+    </div>
+    <div class="section-body" id="bills-body-wrap">
+      <div class="tbl-wrap">
+        <table class="pink-head">
+          <thead><tr><th></th><th>Bill Name</th><th>Due Date</th><th>Budget</th><th>Actual</th><th></th></tr></thead>
+          <tbody id="bills-body"></tbody>
+          <tfoot><tr><td colspan="3"><strong>Total Bills</strong></td><td class="num" id="bills-b-total">$0</td><td class="num" id="bills-a-total">$0</td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addRow('bills')">+ Add row</button>
+    </div>
+  </div>
+
+  <!-- VARIABLE EXPENSES -->
+  <div class="section-card">
+    <div class="section-head green" onclick="toggleSection('expenses')">
+      <span style="min-width:14px"></span>
+      <span class="section-head-title">Variable Expenses</span>
+      <span class="section-meta" style="font-size:.7rem;font-weight:700;min-width:70px;text-align:right" id="expenses-meta"></span>
+      <span class="section-chevron" id="expenses-chev">▾</span>
+    </div>
+    <div class="section-body" id="expenses-body-wrap">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Category</th><th>Budget</th><th>Actual</th><th></th></tr></thead>
+          <tbody id="expenses-body"></tbody>
+          <tfoot><tr><td><strong>Total Expenses</strong></td><td class="num" id="exp-b-total">$0</td><td class="num" id="exp-a-total">$0</td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addRow('expenses')">+ Add row</button>
+    </div>
+  </div>
+
+  <!-- SUBSCRIPTIONS -->
+  <div class="section-card">
+    <div class="section-head pink" onclick="toggleSection('subs')">
+      <span style="min-width:14px"></span>
+      <span class="section-head-title">Subscriptions</span>
+      <span class="section-meta" style="font-size:.7rem;font-weight:700;min-width:70px;text-align:right" id="subs-meta"></span>
+      <span class="section-chevron" id="subs-chev">▾</span>
+    </div>
+    <div class="section-body" id="subs-body-wrap">
+      <div class="tbl-wrap">
+        <table class="pink-head">
+          <thead><tr><th></th><th>Subscription</th><th>Due Date</th><th>Budget</th><th>Actual</th><th></th></tr></thead>
+          <tbody id="subs-body"></tbody>
+          <tfoot><tr><td colspan="3"><strong>Total Subs</strong></td><td class="num" id="subs-b-total">$0</td><td class="num" id="subs-a-total">$0</td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addRow('subs')">+ Add row</button>
+    </div>
+  </div>
+
+  <!-- SAVINGS & INVESTMENTS -->
+  <div class="section-card">
+    <div class="section-head green" onclick="toggleSection('savings')">
+      <span style="min-width:14px"></span>
+      <span class="section-head-title">Savings &amp; Investments</span>
+      <span class="section-meta" style="font-size:.7rem;font-weight:700;min-width:70px;text-align:right" id="savings-meta"></span>
+      <span class="section-chevron" id="savings-chev">▾</span>
+    </div>
+    <div class="section-body" id="savings-body-wrap">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Saving Fund</th><th>Due Date</th><th>Budget</th><th>Actual</th><th></th></tr></thead>
+          <tbody id="savings-body"></tbody>
+          <tfoot><tr><td colspan="2"><strong>Total Savings</strong></td><td class="num" id="sav-b-total">$0</td><td class="num" id="sav-a-total">$0</td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addRow('savings')">+ Add row</button>
+    </div>
+  </div>
+
+  <!-- DEBTS -->
+  <div class="section-card">
+    <div class="section-head pink" onclick="toggleSection('debts')">
+      <span style="min-width:14px"></span>
+      <span class="section-head-title">Debts</span>
+      <span class="section-meta" style="font-size:.7rem;font-weight:700;min-width:70px;text-align:right" id="debts-meta"></span>
+      <span class="section-chevron" id="debts-chev">▾</span>
+    </div>
+    <div class="section-body" id="debts-body-wrap">
+      <div class="tbl-wrap">
+        <table class="pink-head">
+          <thead><tr><th></th><th>Debt</th><th>Due Date</th><th>Budget</th><th>Actual</th><th></th></tr></thead>
+          <tbody id="debts-body"></tbody>
+          <tfoot><tr><td colspan="3"><strong>Total Debt Payments</strong></td><td class="num" id="debt-b-total">$0</td><td class="num" id="debt-a-total">$0</td><td></td></tr></tfoot>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addRow('debts')">+ Add row</button>
+    </div>
+  </div>
+
+</section>
+
+<footer class="page-footer">
+  Made with <span>♥</span> —
+  <span id="footer-sync">data saves locally to your device</span>
+</footer>
+
+<script>
+// ── FIREBASE CONFIG ────────────────────────────────────────
+// Replace with your own config from console.firebase.google.com
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ── STATE ──────────────────────────────────────────────────
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let currentKey='';
+let data={};
+let currentUser=null;
+let saveTimer=null;
+
+function getKey(){
+  const m=document.getElementById('month-select').value;
+  const y=document.getElementById('year-select').value;
+  return `${m}_${y}`;
+}
+
+function emptySection(type){
+  if(type==='income')return [{source:'',date:'',budget:'',actual:''}];
+  if(type==='bills')return [{checked:false,name:'',date:'',budget:'',actual:''}];
+  if(type==='expenses')return [{category:'',budget:'',actual:''}];
+  if(type==='subs')return [{checked:false,name:'',date:'',budget:'',actual:''}];
+  if(type==='savings')return [{name:'',date:'',budget:'',actual:''}];
+  if(type==='debts')return [{checked:false,name:'',date:'',budget:'',actual:''}];
+  return [];
+}
+
+function fillEmpty(){
+  ['income','bills','expenses','subs','savings','debts'].forEach(t=>{
+    if(!data[t]||!data[t].length)data[t]=emptySection(t);
+  });
+}
+
+async function loadData(){
+  currentKey=getKey();
+  if(currentUser){
+    try{
+      const snap=await db.collection('users').doc(currentUser.uid)
+        .collection('budgets').doc(currentKey).get();
+      data=snap.exists?snap.data():{};
+    }catch(e){console.error('Load error',e);data={}}
+  }else{
+    const raw=localStorage.getItem('budget_'+currentKey);
+    try{data=raw?JSON.parse(raw):{}}catch{data={}}
+  }
+  fillEmpty();
+}
+
+function saveData(){
+  if(currentUser){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{
+      db.collection('users').doc(currentUser.uid)
+        .collection('budgets').doc(currentKey).set(data)
+        .catch(e=>console.error('Save error',e));
+    },600);
+  }else{
+    localStorage.setItem('budget_'+currentKey,JSON.stringify(data));
+  }
+}
+
+// ── AUTH PANEL ────────────────────────────────────────────
+let panelOpen=false;
+
+function toggleAuthPanel(){
+  panelOpen=!panelOpen;
+  document.getElementById('auth-panel').style.display=panelOpen?'block':'none';
+  if(panelOpen)setAuthError('');
+}
+
+function closeAuthPanel(){
+  panelOpen=false;
+  document.getElementById('auth-panel').style.display='none';
+}
+
+document.addEventListener('click',e=>{
+  const widget=document.getElementById('auth-widget');
+  if(panelOpen&&!widget.contains(e.target))closeAuthPanel();
+});
+
+function switchAuthMode(mode){
+  document.getElementById('tab-signin').classList.toggle('active',mode==='signin');
+  document.getElementById('tab-signup').classList.toggle('active',mode==='signup');
+  document.getElementById('form-signin').style.display=mode==='signin'?'':'none';
+  document.getElementById('form-signup').style.display=mode==='signup'?'':'none';
+  setAuthError('');
+}
+
+function setAuthError(msg){
+  const el=document.getElementById('auth-error');
+  el.textContent=msg;
+  el.style.display=msg?'block':'none';
+}
+
+async function doSignIn(){
+  const email=document.getElementById('signin-email').value.trim();
+  const pass=document.getElementById('signin-pass').value;
+  if(!email||!pass){setAuthError('Please fill in all fields.');return;}
+  try{await auth.signInWithEmailAndPassword(email,pass);}
+  catch(e){setAuthError(friendlyError(e.code))}
+}
+
+async function doSignUp(){
+  const email=document.getElementById('signup-email').value.trim();
+  const pass=document.getElementById('signup-pass').value;
+  const pass2=document.getElementById('signup-pass2').value;
+  if(!email||!pass||!pass2){setAuthError('Please fill in all fields.');return;}
+  if(pass!==pass2){setAuthError('Passwords do not match.');return;}
+  if(pass.length<6){setAuthError('Password must be at least 6 characters.');return;}
+  try{await auth.createUserWithEmailAndPassword(email,pass);}
+  catch(e){setAuthError(friendlyError(e.code))}
+}
+
+function doSignOut(){auth.signOut();}
+
+function friendlyError(code){
+  return({
+    'auth/user-not-found':'No account found with that email.',
+    'auth/wrong-password':'Incorrect password.',
+    'auth/invalid-email':'Please enter a valid email address.',
+    'auth/email-already-in-use':'An account with this email already exists.',
+    'auth/weak-password':'Password must be at least 6 characters.',
+    'auth/too-many-requests':'Too many attempts. Please try again later.',
+    'auth/invalid-credential':'Invalid email or password.',
+  })[code]||'Something went wrong. Please try again.';
+}
+
+function updateAuthUI(user){
+  const openBtn=document.getElementById('auth-open-btn');
+  const userInfo=document.getElementById('auth-user-info');
+  const syncNote=document.getElementById('footer-sync');
+  if(user){
+    openBtn.style.display='none';
+    userInfo.style.display='flex';
+    document.getElementById('auth-user-email').textContent=user.email;
+    syncNote.textContent='data synced to your account ☁️';
+  }else{
+    openBtn.style.display='';
+    userInfo.style.display='none';
+    syncNote.textContent='data saves locally to your device';
+  }
+}
+
+// ── RENDERING ─────────────────────────────────────────────
+function renderAll(){
+  renderIncome();renderBills();renderExpenses();renderSubs();renderSavings();renderDebts();
+  updateStats();updateCharts();
+}
+
+function inp(val,type){
+  return `<input type="${type||'text'}" value="${esc(val)}" oninput="onInput(this)"/>`;
+}
+function esc(v){return String(v||'').replace(/"/g,'&quot;')}
+function numCell(val){return `<td>${inp(val,'number')}</td>`}
+function textCell(val){return `<td>${inp(val,'text')}</td>`}
+function dateCell(val){return `<td>${inp(val,'date')}</td>`}
+function checkCell(v){return `<td style="text-align:center"><input type="checkbox" ${v?'checked':''} onchange="onCheck(this)"/></td>`}
+function delBtn(sec,i){return `<td><button onclick="delRow('${sec}',${i})" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:11px" title="remove">✕</button></td>`}
+
+function renderIncome(){
+  document.getElementById('income-body').innerHTML=data.income.map((r,i)=>`<tr data-sec="income" data-i="${i}">${textCell(r.source)}${dateCell(r.date)}${numCell(r.budget)}${numCell(r.actual)}${delBtn('income',i)}</tr>`).join('');
+  dollar('income-b-total',sum(data.income,'budget'));dollar('income-a-total',sum(data.income,'actual'));
+}
+function renderBills(){
+  document.getElementById('bills-body').innerHTML=data.bills.map((r,i)=>`<tr data-sec="bills" data-i="${i}">${checkCell(r.checked)}${textCell(r.name)}${dateCell(r.date)}${numCell(r.budget)}${numCell(r.actual)}${delBtn('bills',i)}</tr>`).join('');
+  dollar('bills-b-total',sum(data.bills,'budget'));dollar('bills-a-total',sum(data.bills,'actual'));
+}
+function renderExpenses(){
+  document.getElementById('expenses-body').innerHTML=data.expenses.map((r,i)=>`<tr data-sec="expenses" data-i="${i}">${textCell(r.category)}${numCell(r.budget)}${numCell(r.actual)}${delBtn('expenses',i)}</tr>`).join('');
+  dollar('exp-b-total',sum(data.expenses,'budget'));dollar('exp-a-total',sum(data.expenses,'actual'));
+}
+function renderSubs(){
+  document.getElementById('subs-body').innerHTML=data.subs.map((r,i)=>`<tr data-sec="subs" data-i="${i}">${checkCell(r.checked)}${textCell(r.name)}${dateCell(r.date)}${numCell(r.budget)}${numCell(r.actual)}${delBtn('subs',i)}</tr>`).join('');
+  dollar('subs-b-total',sum(data.subs,'budget'));dollar('subs-a-total',sum(data.subs,'actual'));
+}
+function renderSavings(){
+  document.getElementById('savings-body').innerHTML=data.savings.map((r,i)=>`<tr data-sec="savings" data-i="${i}">${textCell(r.name)}${dateCell(r.date)}${numCell(r.budget)}${numCell(r.actual)}${delBtn('savings',i)}</tr>`).join('');
+  dollar('sav-b-total',sum(data.savings,'budget'));dollar('sav-a-total',sum(data.savings,'actual'));
+}
+function renderDebts(){
+  document.getElementById('debts-body').innerHTML=data.debts.map((r,i)=>`<tr data-sec="debts" data-i="${i}">${checkCell(r.checked)}${textCell(r.name)}${dateCell(r.date)}${numCell(r.budget)}${numCell(r.actual)}${delBtn('debts',i)}</tr>`).join('');
+  dollar('debt-b-total',sum(data.debts,'budget'));dollar('debt-a-total',sum(data.debts,'actual'));
+}
+
+// ── STATS ─────────────────────────────────────────────────
+function sum(arr,key){return arr.reduce((s,r)=>s+(parseFloat(r[key])||0),0)}
+function dollar(id,v){document.getElementById(id).textContent='$'+v.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2})}
+
+function updateStats(){
+  const iB=sum(data.income,'budget'),iA=sum(data.income,'actual');
+  const bB=sum(data.bills,'budget'),bA=sum(data.bills,'actual');
+  const eB=sum(data.expenses,'budget'),eA=sum(data.expenses,'actual');
+  const sB=sum(data.subs,'budget'),sA=sum(data.subs,'actual');
+  const savB=sum(data.savings,'budget'),savA=sum(data.savings,'actual');
+  const dB=sum(data.debts,'budget'),dA=sum(data.debts,'actual');
+  const totalExpB=bB+eB+sB+savB+dB,totalExpA=bA+eA+sA+savA+dA;
+  const leftB=iB-totalExpB,leftA=iA-totalExpA;
+  dollar('stat-income',iA);dollar('stat-expenses',totalExpA);
+  dollar('stat-left',leftA);dollar('stat-savings',savA);
+  ['income','bills','expenses','subs','savings','debts'].forEach((k,j)=>{
+    const vals=[iA,bA,eA,sA,savA,dA];
+    const el=document.getElementById(k+'-meta');
+    if(el)el.textContent=vals[j]>0?'$'+vals[j].toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}):'';
+  });
+  setcf('cf-income',iB,iA);setcf('cf-bills',bB,bA);setcf('cf-exp',eB,eA);
+  setcf('cf-sub',sB,sA);setcf('cf-sav',savB,savA);setcf('cf-debt',dB,dA);
+  setcf('cf-lo',leftB,leftA);
+}
+
+function setcf(id,b,a){
+  dollar(id+'-b',b);dollar(id+'-a',a);
+  const d=b-a,el=document.getElementById(id+'-d');
+  el.textContent=(d>=0?'+':'-')+'$'+Math.abs(d).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+  el.className='num '+(d>=0?'pos':'neg');
+}
+
+// ── CHARTS ─────────────────────────────────────────────────
+let barChart,pieChart,donutChart;
+function updateCharts(){
+  const iA=sum(data.income,'actual'),bA=sum(data.bills,'actual'),eA=sum(data.expenses,'actual');
+  const sA=sum(data.subs,'actual'),savA=sum(data.savings,'actual'),dA=sum(data.debts,'actual');
+  const iB=sum(data.income,'budget'),bB=sum(data.bills,'budget'),eB=sum(data.expenses,'budget');
+  const sB=sum(data.subs,'budget'),savB=sum(data.savings,'budget'),dB=sum(data.debts,'budget');
+  const leftA=iA-bA-eA-sA-savA-dA;
+  const barLabels=['Income','Bills','Expenses','Subs','Savings','Debts'];
+  if(barChart){barChart.data.datasets[0].data=[iB,bB,eB,sB,savB,dB];barChart.data.datasets[1].data=[iA,bA,eA,sA,savA,dA];barChart.update()}
+  else barChart=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:barLabels,datasets:[{label:'Budget',data:[iB,bB,eB,sB,savB,dB],backgroundColor:'#eecdd0',borderRadius:4,barPercentage:.45},{label:'Actual',data:[iA,bA,eA,sA,savA,dA],backgroundColor:'#e8b4b8',borderRadius:4,barPercentage:.45}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:10}}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{font:{size:9},callback:v=>'$'+v}}}}});
+  const pL=data.bills.filter(r=>r.name&&parseFloat(r.actual)>0).map(r=>r.name);
+  const pV=data.bills.filter(r=>r.name&&parseFloat(r.actual)>0).map(r=>parseFloat(r.actual)||0);
+  document.getElementById('pie-center').textContent='$'+(bA||0).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});
+  if(pieChart){pieChart.data.labels=pL;pieChart.data.datasets[0].data=pV;pieChart.update()}
+  else pieChart=new Chart(document.getElementById('pieChart'),{type:'pie',data:{labels:pL.length?pL:['No data'],datasets:[{data:pV.length?pV:[1],backgroundColor:pV.length?['#e8b4b8','#c4888e','#eecdd0','#d9c0c0','#b87a80','#7a5a5a','#faf0f1','#a86e74']:['#eee'],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+  const dV=[bA,eA,sA,savA,dA,Math.max(leftA,0)];
+  document.getElementById('donut-center').textContent='$'+(Math.max(leftA,0)).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});
+  if(donutChart){donutChart.data.datasets[0].data=dV;donutChart.update()}
+  else donutChart=new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['Bills','Expenses','Subs','Savings','Debts','Left'],datasets:[{data:dV,backgroundColor:['#e8b4b8','#b87a80','#eecdd0','#c4a8a8','#d9c0c0','#7a5a5a'],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false}}}});
+}
+
+// ── COLLAPSIBLE ────────────────────────────────────────────
+const sectionState={cashflow:true,income:true,bills:true,expenses:true,subs:true,savings:true,debts:true};
+function toggleSection(sec){
+  sectionState[sec]=!sectionState[sec];
+  const body=document.getElementById(sec+'-body-wrap');
+  const chev=document.getElementById(sec+'-chev');
+  if(body)body.classList.toggle('collapsed',!sectionState[sec]);
+  if(chev)chev.style.transform=sectionState[sec]?'rotate(0deg)':'rotate(-90deg)';
+}
+
+// ── INPUT HANDLING ─────────────────────────────────────────
+function onInput(el){
+  const tr=el.closest('tr'),sec=tr.dataset.sec,i=parseInt(tr.dataset.i);
+  const ins=tr.querySelectorAll('input[type=text],input[type=number],input[type=date]');
+  const row=data[sec][i];
+  if(sec==='income'){row.source=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
+  else if(sec==='bills'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
+  else if(sec==='expenses'){row.category=ins[0].value;row.budget=ins[1].value;row.actual=ins[2].value}
+  else if(sec==='subs'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
+  else if(sec==='savings'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
+  else if(sec==='debts'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
+  saveData();updateStats();updateCharts();
+}
+function onCheck(el){
+  const tr=el.closest('tr');
+  data[tr.dataset.sec][parseInt(tr.dataset.i)].checked=el.checked;
+  saveData();
+}
+function addRow(sec){data[sec].push(emptySection(sec)[0]);saveData();renderAll();}
+function delRow(sec,i){
+  data[sec].splice(i,1);
+  if(!data[sec].length)data[sec]=emptySection(sec);
+  saveData();renderAll();
+}
+
+async function switchMonth(){
+  if(saveTimer&&currentUser){
+    clearTimeout(saveTimer);
+    await db.collection('users').doc(currentUser.uid)
+      .collection('budgets').doc(currentKey).set(data).catch(()=>{});
+  }
+  await loadData();renderAll();
+}
+
+// ── INIT ──────────────────────────────────────────────────
+auth.onAuthStateChanged(async (user)=>{
+  currentUser=user;
+  updateAuthUI(user);
+  closeAuthPanel();
+  await loadData();
+  renderAll();
+});
+
+(function init(){
+  const now=new Date();
+  document.getElementById('month-select').value=MONTHS[now.getMonth()];
+  document.getElementById('year-select').value=now.getFullYear();
+  loadData().then(renderAll);
+})();
+</script>
+</body>
+</html>
