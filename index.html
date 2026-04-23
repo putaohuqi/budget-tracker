@@ -222,13 +222,25 @@ body::after{
 }
 #sync-btn:hover{transform:translateY(-1px)}
 #sync-btn:disabled{cursor:wait;opacity:.72;transform:none}
+.sync-status-stack{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:.04rem;
+  min-width:108px;
+}
 #sync-status{
-  min-width:72px;
   text-align:left;
   letter-spacing:.04em;
   text-transform:none;
   line-height:1.05;
   font-size:.64rem;
+}
+#sync-timestamp{
+  font-size:.56rem;
+  line-height:1.1;
+  color:var(--muted);
+  white-space:nowrap;
 }
 #sync-status[data-tone="ok"]{color:var(--sage-deep)}
 #sync-status[data-tone="warn"]{color:var(--rose-deep)}
@@ -506,7 +518,7 @@ body::after{
   gap:.78rem;
   padding:.78rem 0 0;
   align-items:stretch;
-  grid-auto-rows:minmax(220px,auto);
+  grid-auto-rows:300px;
 }
 .cashflow-card{grid-column:1;grid-row:1}
 .income-card{grid-column:1;grid-row:2}
@@ -518,6 +530,8 @@ body::after{
 .section-card{
   display:flex;
   flex-direction:column;
+  height:100%;
+  min-height:0;
   background:rgba(255,255,255,0.8);
   border-radius:18px;
   border:1px solid rgba(176,143,122,0.22);
@@ -563,6 +577,7 @@ body::after{
 .section-body{
   display:flex;
   flex:1;
+  min-height:0;
   flex-direction:column;
   overflow:hidden;
   transition:max-height .3s ease,opacity .2s ease;
@@ -574,8 +589,23 @@ body::after{
 /* ── TABLES ── */
 .tbl-wrap{
   overflow-x:auto;
+  overflow-y:auto;
   padding:0;
   flex:1;
+  min-height:0;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(176,143,122,0.5) transparent;
+}
+.tbl-wrap::-webkit-scrollbar{
+  width:8px;
+  height:8px;
+}
+.tbl-wrap::-webkit-scrollbar-track{
+  background:transparent;
+}
+.tbl-wrap::-webkit-scrollbar-thumb{
+  background:rgba(176,143,122,0.38);
+  border-radius:999px;
 }
 table{
   width:100%;
@@ -583,6 +613,9 @@ table{
   font-size:.74rem;
 }
 thead th{
+  position:sticky;
+  top:0;
+  z-index:1;
   background:#f3f4da;
   font-family:'Manrope',sans-serif;
   color:var(--sage-deep);
@@ -597,6 +630,78 @@ thead th{
 .pink-head thead th{
   background:#fde8e9;
   color:var(--rose-deep);
+}
+.expense-group-row td{
+  background:rgba(245,244,220,0.72);
+  font-weight:700;
+}
+.expense-group-main,
+.expense-item-main{
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+}
+.expense-toggle{
+  width:20px;
+  height:20px;
+  border:none;
+  border-radius:999px;
+  background:rgba(112,108,62,0.1);
+  color:var(--sage-deep);
+  font:800 .78rem 'Manrope',sans-serif;
+  cursor:pointer;
+  flex:0 0 auto;
+}
+.expense-category-input{
+  font-weight:800 !important;
+}
+.expense-group-count{
+  color:var(--muted);
+  font-size:.68rem;
+  white-space:nowrap;
+}
+.expense-inline-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:.28rem;
+}
+.expense-inline-btn{
+  border:none;
+  background:rgba(255,253,248,0.9);
+  color:var(--muted);
+  font:800 .62rem 'Manrope',sans-serif;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  border-radius:999px;
+  padding:.28rem .45rem;
+  cursor:pointer;
+}
+.expense-inline-btn:hover{
+  background:#fff8f5;
+  color:var(--rose-deep);
+}
+.expense-delete-btn{
+  border:none;
+  background:transparent;
+  color:#cbb7ab;
+  font-size:.9rem;
+  cursor:pointer;
+  line-height:1;
+}
+.expense-delete-btn:hover{color:var(--rose-deep)}
+.expense-item-row td:first-child{
+  padding-left:1.15rem;
+}
+.expense-item-main{
+  padding-left:.3rem;
+}
+.expense-item-dot{
+  width:6px;
+  height:6px;
+  border-radius:999px;
+  background:rgba(176,143,122,0.62);
+  flex:0 0 auto;
 }
 td{
   padding:.24rem .4rem;
@@ -738,10 +843,18 @@ input[type=checkbox]{
   .sync-pill{
     align-items:center;
   }
+  .sync-status-stack{
+    align-items:center;
+    width:100%;
+  }
   #sync-status{
     width:100%;
-    min-width:0;
     text-align:center;
+  }
+  #sync-timestamp{
+    width:100%;
+    text-align:center;
+    white-space:normal;
   }
   #auth-user-email{max-width:92px}
   table{font-size:.72rem}
@@ -814,7 +927,10 @@ input[type=checkbox]{
         <input id="savings-goal" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$0" oninput="updateSavingsGoal(this.value)"/>
       </div>
       <button id="sync-btn" onclick="manualSave()">Save</button>
-      <span id="sync-status" data-tone="neutral">Local only.</span>
+      <div class="sync-status-stack">
+        <span id="sync-status" data-tone="neutral">Local only.</span>
+        <span id="sync-timestamp">No saves yet.</span>
+      </div>
     </div>
   </div>
 </header>
@@ -935,12 +1051,12 @@ input[type=checkbox]{
     <div class="section-body" id="expenses-body-wrap">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Category</th><th>Cost</th><th></th></tr></thead>
+          <thead><tr><th>Category / Transaction</th><th>Date / Count</th><th>Cost</th><th></th></tr></thead>
           <tbody id="expenses-body"></tbody>
-          <tfoot><tr><td><strong>Total Expenses</strong></td><td class="num" id="exp-a-total">$0</td><td></td></tr></tfoot>
+          <tfoot><tr><td colspan="2"><strong>Total Expenses</strong></td><td class="num" id="exp-a-total">$0</td><td></td></tr></tfoot>
         </table>
       </div>
-      <button class="add-row-btn" onclick="addRow('expenses')">+ Add row</button>
+      <button class="add-row-btn" onclick="addRow('expenses')">+ Add category</button>
     </div>
   </div>
 
@@ -1003,9 +1119,13 @@ function getKey(){
 function emptySection(type){
   if(type==='income')return [{source:'',date:'',budget:''}];
   if(type==='bills')return [{checked:false,name:'',date:'',amount:''}];
-  if(type==='expenses')return [{category:'',amount:''}];
+  if(type==='expenses')return [{category:'',open:true,items:[emptyExpenseItem()]}];
   if(type==='subs')return [{checked:false,name:'',date:'',amount:''}];
   return [];
+}
+
+function emptyExpenseItem(){
+  return {label:'',date:'',amount:''};
 }
 
 function pickValue(row,...keys){
@@ -1015,7 +1135,38 @@ function pickValue(row,...keys){
   return '';
 }
 
+function normalizeExpenseItems(row){
+  if(Array.isArray(row&&row.items)&&row.items.length){
+    return row.items.map(item=>({
+      label:item&&pickValue(item,'label','name','merchant')||'',
+      date:item&&item.date||'',
+      amount:pickValue(item,'amount','actual','budget')
+    }));
+  }
+  const legacyAmount=pickValue(row,'amount','actual','budget');
+  return [legacyAmount!==''?{label:'',date:'',amount:legacyAmount}:emptyExpenseItem()];
+}
+
+function expenseItems(row){
+  return Array.isArray(row&&row.items)&&row.items.length ? row.items : [emptyExpenseItem()];
+}
+
+function expenseCategoryTotal(row){
+  return expenseItems(row).reduce((sum,item)=>sum+(parseFloat(item.amount)||0),0);
+}
+
+function expenseTotal(){
+  return data.expenses.reduce((sum,row)=>sum+expenseCategoryTotal(row),0);
+}
+
+function expenseFilledCount(row){
+  return expenseItems(row).filter(item=>item.label||item.date||(parseFloat(item.amount)||0)).length;
+}
+
 function fillEmpty(){
+  if(!data.meta||typeof data.meta!=='object')data.meta={};
+  if(typeof data.meta.updatedAt!=='string')data.meta.updatedAt='';
+  if(typeof data.meta.syncedAt!=='string')data.meta.syncedAt='';
   data.income=Array.isArray(data.income)&&data.income.length
     ? data.income.map(row=>({
         source:row&&row.source||'',
@@ -1034,7 +1185,8 @@ function fillEmpty(){
   data.expenses=Array.isArray(data.expenses)&&data.expenses.length
     ? data.expenses.map(row=>({
         category:row&&row.category||'',
-        amount:pickValue(row,'amount','actual','budget')
+        open:row&&row.open!==false,
+        items:normalizeExpenseItems(row)
       }))
     : emptySection('expenses');
   data.subs=Array.isArray(data.subs)&&data.subs.length
@@ -1088,6 +1240,43 @@ function setSyncStatus(message,tone){
   el.dataset.tone=tone||'neutral';
 }
 
+function formatTimestamp(value){
+  if(!value)return '';
+  const stamp=new Date(value);
+  if(Number.isNaN(stamp.getTime()))return '';
+  return new Intl.DateTimeFormat(undefined,{
+    month:'short',
+    day:'numeric',
+    hour:'numeric',
+    minute:'2-digit'
+  }).format(stamp);
+}
+
+function refreshSyncTimestamp(){
+  const el=document.getElementById('sync-timestamp');
+  if(!el)return;
+  const updatedAt=data&&data.meta&&data.meta.updatedAt;
+  const syncedAt=data&&data.meta&&data.meta.syncedAt;
+  const updatedMs=updatedAt?new Date(updatedAt).getTime():0;
+  const syncedMs=syncedAt?new Date(syncedAt).getTime():0;
+
+  if(currentUser){
+    if(updatedMs && updatedMs>syncedMs){
+      el.textContent=`Last updated ${formatTimestamp(updatedAt)}`;
+    }else if(syncedMs){
+      el.textContent=`Last synced ${formatTimestamp(syncedAt)}`;
+    }else if(updatedMs){
+      el.textContent=`Last saved ${formatTimestamp(updatedAt)}`;
+    }else{
+      el.textContent='No saves yet.';
+    }
+  }else if(updatedMs){
+    el.textContent=`Last saved ${formatTimestamp(updatedAt)}`;
+  }else{
+    el.textContent='No saves yet.';
+  }
+}
+
 function setSyncButtonBusy(isBusy){
   const btn=document.getElementById('sync-btn');
   if(!btn)return;
@@ -1111,12 +1300,16 @@ function friendlySyncError(err){
 
 async function persistBudget(options){
   const settings=options||{};
+  fillEmpty();
   clearTimeout(saveTimer);
   saveTimer=null;
   if(currentUser){
     setSyncButtonBusy(true);
     if(!settings.quiet)setSyncStatus(settings.manual?'Syncing...':'Syncing...','saving');
     try{
+      const syncStamp=new Date().toISOString();
+      if(!data.meta.updatedAt)data.meta.updatedAt=syncStamp;
+      data.meta.syncedAt=syncStamp;
       await getBudgetDocRef().set(data);
       if(!settings.quiet)setSyncStatus(settings.manual?'Saved.':'Synced.','ok');
     }catch(e){
@@ -1124,10 +1317,13 @@ async function persistBudget(options){
       setSyncStatus(friendlySyncError(e),'error');
     }finally{
       setSyncButtonBusy(false);
+      refreshSyncTimestamp();
     }
   }else{
+    data.meta.updatedAt=new Date().toISOString();
     localStorage.setItem('budget_'+currentKey,JSON.stringify(data));
     if(!settings.quiet)setSyncStatus(settings.manual?'Saved on this device.':'Saved locally on this device.','ok');
+    refreshSyncTimestamp();
   }
 }
 
@@ -1159,9 +1355,13 @@ async function loadData(){
     setSyncStatus('Local only.','neutral');
   }
   fillEmpty();
+  refreshSyncTimestamp();
 }
 
-function saveData(){
+function saveData(options){
+  const settings=options||{};
+  fillEmpty();
+  if(!settings.preserveTimestamp)data.meta.updatedAt=new Date().toISOString();
   if(currentUser){
     clearTimeout(saveTimer);
     setSyncStatus('Unsynced.','warn');
@@ -1170,6 +1370,7 @@ function saveData(){
     localStorage.setItem('budget_'+currentKey,JSON.stringify(data));
     setSyncStatus('Saved.','ok');
   }
+  refreshSyncTimestamp();
 }
 
 async function manualSave(){
@@ -1275,7 +1476,7 @@ function renderAll(){
   renderIncome();renderBills();renderExpenses();renderSubs();
   const goalInput=document.getElementById('savings-goal');
   if(goalInput)goalInput.value=data.savingsGoal||'';
-  refreshMonthLabel();updateStats();updateCharts();
+  refreshMonthLabel();updateStats();updateCharts();refreshSyncTimestamp();
 }
 
 function inp(val,type,placeholder){
@@ -1297,8 +1498,40 @@ function renderBills(){
   dollar('bills-a-total',sum(data.bills,'amount'));
 }
 function renderExpenses(){
-  document.getElementById('expenses-body').innerHTML=data.expenses.map((r,i)=>`<tr data-sec="expenses" data-i="${i}">${textCell(r.category,'Groceries / Dining / Shopping')}${numCell(r.amount,'54.80')}${delBtn('expenses',i)}</tr>`).join('');
-  dollar('exp-a-total',sum(data.expenses,'amount'));
+  document.getElementById('expenses-body').innerHTML=data.expenses.map((r,i)=>{
+    const total=expenseCategoryTotal(r);
+    const count=expenseFilledCount(r);
+    const open=r.open!==false;
+    const parent=`<tr class="expense-group-row">
+      <td>
+        <div class="expense-group-main">
+          <button type="button" class="expense-toggle" onclick="toggleExpenseGroup(${i})">${open?'▾':'▸'}</button>
+          <input class="expense-category-input" data-i="${i}" type="text" value="${esc(r.category)}" placeholder="Dining out / groceries / entertainment" oninput="onExpenseCategoryInput(this)"/>
+        </div>
+      </td>
+      <td class="expense-group-count" id="expense-group-count-${i}">${count?`${count} ${count===1?'transaction':'transactions'}`:'No transactions'}</td>
+      <td class="num" id="expense-group-total-${i}">${formatMoney(total)}</td>
+      <td>
+        <div class="expense-inline-actions">
+          <button type="button" class="expense-inline-btn" onclick="addExpenseTransaction(${i})">+ item</button>
+          <button type="button" class="expense-delete-btn" onclick="delExpenseCategory(${i})" title="remove category">✕</button>
+        </div>
+      </td>
+    </tr>`;
+    const children=open?expenseItems(r).map((item,j)=>`<tr class="expense-item-row">
+      <td>
+        <div class="expense-item-main">
+          <span class="expense-item-dot"></span>
+          <input data-i="${i}" data-j="${j}" data-field="label" type="text" value="${esc(item.label)}" placeholder="What / where" oninput="onExpenseItemInput(this)"/>
+        </div>
+      </td>
+      <td><input data-i="${i}" data-j="${j}" data-field="date" type="date" value="${esc(item.date)}" oninput="onExpenseItemInput(this)"/></td>
+      <td><input data-i="${i}" data-j="${j}" data-field="amount" type="number" value="${esc(item.amount)}" placeholder="0.00" oninput="onExpenseItemInput(this)"/></td>
+      <td><button type="button" class="expense-delete-btn" onclick="delExpenseTransaction(${i},${j})" title="remove transaction">✕</button></td>
+    </tr>`).join(''):'';
+    return parent+children;
+  }).join('');
+  dollar('exp-a-total',expenseTotal());
 }
 function renderSubs(){
   document.getElementById('subs-body').innerHTML=data.subs.map((r,i)=>`<tr data-sec="subs" data-i="${i}">${checkCell(r.checked)}${textCell(r.name,'Netflix / Spotify')}${dateCell(r.date)}${numCell(r.amount,'17.99')}${delBtn('subs',i)}</tr>`).join('');
@@ -1319,7 +1552,7 @@ function dollar(id,v){
 function updateStats(){
   const budgetTotal=sum(data.income,'budget');
   const billsSpent=sum(data.bills,'amount');
-  const expensesSpent=sum(data.expenses,'amount');
+  const expensesSpent=expenseTotal();
   const subsSpent=sum(data.subs,'amount');
   const totalSpent=billsSpent+expensesSpent+subsSpent;
   const left=budgetTotal-totalSpent;
@@ -1377,7 +1610,7 @@ function updateCharts(){
   };
   const budgetTotal=sum(data.income,'budget');
   const billsSpent=sum(data.bills,'amount');
-  const expensesSpent=sum(data.expenses,'amount');
+  const expensesSpent=expenseTotal();
   const subsSpent=sum(data.subs,'amount');
   const totalSpent=billsSpent+expensesSpent+subsSpent;
   const left=budgetTotal-totalSpent;
@@ -1426,7 +1659,6 @@ function onInput(el){
   const row=data[sec][i];
   if(sec==='income'){row.source=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value}
   else if(sec==='bills'){row.name=ins[0].value;row.date=ins[1].value;row.amount=ins[2].value}
-  else if(sec==='expenses'){row.category=ins[0].value;row.amount=ins[1].value}
   else if(sec==='subs'){row.name=ins[0].value;row.date=ins[1].value;row.amount=ins[2].value}
   saveData();updateStats();updateCharts();
 }
@@ -1435,7 +1667,76 @@ function onCheck(el){
   data[tr.dataset.sec][parseInt(tr.dataset.i)].checked=el.checked;
   saveData();
 }
-function addRow(sec){data[sec].push(emptySection(sec)[0]);saveData();renderAll();}
+function onExpenseCategoryInput(el){
+  const i=parseInt(el.dataset.i,10);
+  data.expenses[i].category=el.value;
+  saveData();
+}
+
+function onExpenseItemInput(el){
+  const i=parseInt(el.dataset.i,10);
+  const j=parseInt(el.dataset.j,10);
+  const field=el.dataset.field;
+  data.expenses[i].items[j][field]=el.value;
+  saveData();
+  syncExpenseTotals();
+  updateStats();
+  updateCharts();
+}
+
+function toggleExpenseGroup(i){
+  data.expenses[i].open=data.expenses[i].open===false;
+  saveData({preserveTimestamp:true});
+  renderExpenses();
+}
+
+function addExpenseTransaction(i){
+  data.expenses[i].open=true;
+  data.expenses[i].items.push(emptyExpenseItem());
+  saveData();
+  renderExpenses();
+  updateStats();
+  updateCharts();
+}
+
+function delExpenseTransaction(i,j){
+  const items=data.expenses[i].items;
+  if(items.length===1){
+    data.expenses[i].items=[emptyExpenseItem()];
+  }else{
+    items.splice(j,1);
+  }
+  saveData();
+  renderExpenses();
+  updateStats();
+  updateCharts();
+}
+
+function delExpenseCategory(i){
+  data.expenses.splice(i,1);
+  if(!data.expenses.length)data.expenses=emptySection('expenses');
+  saveData();
+  renderAll();
+}
+
+function syncExpenseTotals(){
+  dollar('exp-a-total',expenseTotal());
+  data.expenses.forEach((row,i)=>{
+    const totalEl=document.getElementById(`expense-group-total-${i}`);
+    const countEl=document.getElementById(`expense-group-count-${i}`);
+    if(totalEl)totalEl.textContent=formatMoney(expenseCategoryTotal(row));
+    if(countEl){
+      const count=expenseFilledCount(row);
+      countEl.textContent=count?`${count} ${count===1?'transaction':'transactions'}`:'No transactions';
+    }
+  });
+}
+
+function addRow(sec){
+  data[sec].push(emptySection(sec)[0]);
+  saveData();
+  renderAll();
+}
 function delRow(sec,i){
   data[sec].splice(i,1);
   if(!data[sec].length)data[sec]=emptySection(sec);
