@@ -153,9 +153,9 @@ body::after{
   padding:.6rem 1rem;
 }
 .sync-actions{
-  min-height:74px;
-  gap:.65rem;
-  padding:.44rem .95rem;
+  min-height:58px;
+  gap:.55rem;
+  padding:.22rem .9rem;
 }
 .month-selector label,
 .sync-pill-label,
@@ -180,25 +180,36 @@ body::after{
   display:flex;
   flex-direction:column;
   align-items:flex-start;
-  gap:.16rem;
-  padding-right:.25rem;
-  line-height:1.08;
+  gap:.08rem;
+  padding-right:.15rem;
+  line-height:1.02;
 }
 .sync-pill strong{
   font-family:'Fraunces',serif;
-  font-size:.98rem;
+  font-size:.9rem;
   color:var(--sage-deep);
-  line-height:1.05;
+  line-height:1;
 }
+#savings-goal{
+  width:110px;
+  padding:0;
+  border:none;
+  background:transparent;
+  color:var(--sage-deep);
+  font:700 1.05rem 'Fraunces',serif;
+  outline:none;
+  box-shadow:none;
+}
+#savings-goal::placeholder{color:rgba(112,108,62,0.46)}
 #sync-btn{
   border:none;
   border-radius:999px;
   background:linear-gradient(135deg,var(--olive) 0%,var(--moss) 100%);
   color:#fffdf7;
   font-family:'Manrope',sans-serif;
-  font-size:.84rem;
+  font-size:.8rem;
   font-weight:800;
-  padding:.64rem 1.08rem;
+  padding:.54rem .96rem;
   cursor:pointer;
   transition:transform .15s ease,box-shadow .15s ease,opacity .15s ease;
   box-shadow:0 8px 18px rgba(112,108,62,0.16);
@@ -210,7 +221,7 @@ body::after{
   text-align:left;
   letter-spacing:.04em;
   text-transform:none;
-  line-height:1.15;
+  line-height:1.05;
 }
 #sync-status[data-tone="ok"]{color:var(--sage-deep)}
 #sync-status[data-tone="warn"]{color:var(--rose-deep)}
@@ -494,21 +505,22 @@ body::after{
 /* ── MAIN GRID ── */
 .main-grid{
   display:grid;
-  grid-template-columns:1.04fr 1.04fr 1.32fr 1.12fr;
+  grid-template-columns:1.04fr 1.04fr 1.34fr;
   gap:.85rem;
   padding:.85rem 0 0;
-  align-items:start;
+  align-items:stretch;
+  grid-auto-rows:minmax(220px,auto);
 }
 .cashflow-card{grid-column:1;grid-row:1}
 .income-card{grid-column:1;grid-row:2}
 .bills-card{grid-column:2;grid-row:1}
 .subs-card{grid-column:2;grid-row:2}
 .expenses-card{grid-column:3;grid-row:1 / span 2}
-.savings-card{grid-column:4;grid-row:1}
-.debts-card{grid-column:4;grid-row:2}
 
 /* ── SECTION CARDS ── */
 .section-card{
+  display:flex;
+  flex-direction:column;
   background:rgba(255,255,255,0.8);
   border-radius:18px;
   border:1px solid rgba(176,143,122,0.22);
@@ -552,6 +564,9 @@ body::after{
   min-width:14px;
 }
 .section-body{
+  display:flex;
+  flex:1;
+  flex-direction:column;
   overflow:hidden;
   transition:max-height .3s ease,opacity .2s ease;
   max-height:2000px;
@@ -563,6 +578,7 @@ body::after{
 .tbl-wrap{
   overflow-x:auto;
   padding:0;
+  flex:1;
 }
 table{
   width:100%;
@@ -636,6 +652,7 @@ input[type=checkbox]{
 }
 .add-row-btn{
   width:100%;
+  margin-top:auto;
   margin:0;
   padding:.6rem;
   background:transparent;
@@ -796,8 +813,8 @@ input[type=checkbox]{
 
     <div class="sync-actions">
       <div class="sync-pill">
-        <span class="sync-pill-label">Goal Savings</span>
-        <strong id="stat-savings">$0.00</strong>
+        <span class="sync-pill-label">Savings Goal</span>
+        <input id="savings-goal" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$0" oninput="updateSavingsGoal(this.value)"/>
       </div>
       <button id="sync-btn" onclick="manualSave()">Save now</button>
       <span id="sync-status" data-tone="neutral">Local mode: sign in to sync.</span>
@@ -864,8 +881,6 @@ input[type=checkbox]{
             <tr><td>Monthly Bills</td><td class="num" id="cf-bills-b">$0</td><td class="num" id="cf-bills-a">$0</td><td class="num" id="cf-bills-d">$0</td></tr>
             <tr><td>Everyday Spending</td><td class="num" id="cf-exp-b">$0</td><td class="num" id="cf-exp-a">$0</td><td class="num" id="cf-exp-d">$0</td></tr>
             <tr><td>Subscriptions</td><td class="num" id="cf-sub-b">$0</td><td class="num" id="cf-sub-a">$0</td><td class="num" id="cf-sub-d">$0</td></tr>
-            <tr><td>Savings &amp; Inv.</td><td class="num" id="cf-sav-b">$0</td><td class="num" id="cf-sav-a">$0</td><td class="num" id="cf-sav-d">$0</td></tr>
-            <tr><td>Debts</td><td class="num" id="cf-debt-b">$0</td><td class="num" id="cf-debt-a">$0</td><td class="num" id="cf-debt-d">$0</td></tr>
           </tbody>
           <tfoot><tr><td><strong>Remaining</strong></td><td class="num" id="cf-lo-b">$0</td><td class="num" id="cf-lo-a">$0</td><td class="num" id="cf-lo-d">$0</td></tr></tfoot>
         </table>
@@ -953,46 +968,6 @@ input[type=checkbox]{
     </div>
   </div>
 
-  <!-- SAVINGS & INVESTMENTS -->
-  <div class="section-card savings-card">
-    <div class="section-head green" onclick="toggleSection('savings')">
-      <span style="min-width:14px"></span>
-      <span class="section-head-title">Savings &amp; Investments</span>
-      <span class="section-meta" style="font-size:.7rem;font-weight:700;min-width:70px;text-align:right" id="savings-meta"></span>
-      <span class="section-chevron" id="savings-chev">▾</span>
-    </div>
-    <div class="section-body" id="savings-body-wrap">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Saving Fund</th><th>Due Date</th><th>Planned</th><th>Moved</th><th></th></tr></thead>
-          <tbody id="savings-body"></tbody>
-          <tfoot><tr><td colspan="2"><strong>Total Savings</strong></td><td class="num" id="sav-b-total">$0</td><td class="num" id="sav-a-total">$0</td><td></td></tr></tfoot>
-        </table>
-      </div>
-      <button class="add-row-btn" onclick="addRow('savings')">+ Add row</button>
-    </div>
-  </div>
-
-  <!-- DEBTS -->
-  <div class="section-card debts-card">
-    <div class="section-head pink" onclick="toggleSection('debts')">
-      <span style="min-width:14px"></span>
-      <span class="section-head-title">Debts</span>
-      <span class="section-meta" style="font-size:.7rem;font-weight:700;min-width:70px;text-align:right" id="debts-meta"></span>
-      <span class="section-chevron" id="debts-chev">▾</span>
-    </div>
-    <div class="section-body" id="debts-body-wrap">
-      <div class="tbl-wrap">
-        <table class="pink-head">
-          <thead><tr><th></th><th>Debt</th><th>Due Date</th><th>Planned</th><th>Paid</th><th></th></tr></thead>
-          <tbody id="debts-body"></tbody>
-          <tfoot><tr><td colspan="3"><strong>Total Debt Payments</strong></td><td class="num" id="debt-b-total">$0</td><td class="num" id="debt-a-total">$0</td><td></td></tr></tfoot>
-        </table>
-      </div>
-      <button class="add-row-btn" onclick="addRow('debts')">+ Add row</button>
-    </div>
-  </div>
-
 </section>
 </main>
 
@@ -1017,7 +992,7 @@ const db = firebase.firestore();
 
 // ── STATE ──────────────────────────────────────────────────
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const BUDGET_SECTIONS=['income','bills','expenses','subs','savings','debts'];
+const BUDGET_SECTIONS=['income','bills','expenses','subs'];
 let currentKey='';
 let data={};
 let currentUser=null;
@@ -1034,8 +1009,6 @@ function emptySection(type){
   if(type==='bills')return [{checked:false,name:'',date:'',budget:'',actual:''}];
   if(type==='expenses')return [{category:'',budget:'',actual:''}];
   if(type==='subs')return [{checked:false,name:'',date:'',budget:'',actual:''}];
-  if(type==='savings')return [{name:'',date:'',budget:'',actual:''}];
-  if(type==='debts')return [{checked:false,name:'',date:'',budget:'',actual:''}];
   return [];
 }
 
@@ -1043,6 +1016,7 @@ function fillEmpty(){
   BUDGET_SECTIONS.forEach(t=>{
     if(!data[t]||!data[t].length)data[t]=emptySection(t);
   });
+  if(typeof data.savingsGoal==='undefined'||data.savingsGoal===null)data.savingsGoal='';
 }
 
 function getBudgetDocRef(){
@@ -1056,12 +1030,17 @@ function parseLocalBudget(key){
 }
 
 function hasMeaningfulData(payload){
-  return BUDGET_SECTIONS.some(sec=>
+  return !!(payload&&payload.savingsGoal) || BUDGET_SECTIONS.some(sec=>
     Array.isArray(payload[sec]) &&
     payload[sec].some(row=>
       Object.values(row||{}).some(value=>value!==''&&value!==false&&value!=null)
     )
   );
+}
+
+function updateSavingsGoal(value){
+  data.savingsGoal=value;
+  saveData();
 }
 
 function refreshMonthLabel(){
@@ -1264,7 +1243,9 @@ function updateAuthUI(user){
 
 // ── RENDERING ─────────────────────────────────────────────
 function renderAll(){
-  renderIncome();renderBills();renderExpenses();renderSubs();renderSavings();renderDebts();
+  renderIncome();renderBills();renderExpenses();renderSubs();
+  const goalInput=document.getElementById('savings-goal');
+  if(goalInput)goalInput.value=data.savingsGoal||'';
   refreshMonthLabel();updateStats();updateCharts();
 }
 
@@ -1294,15 +1275,6 @@ function renderSubs(){
   document.getElementById('subs-body').innerHTML=data.subs.map((r,i)=>`<tr data-sec="subs" data-i="${i}">${checkCell(r.checked)}${textCell(r.name,'Netflix / Spotify')}${dateCell(r.date)}${numCell(r.budget,'17.99')}${numCell(r.actual,'17.99')}${delBtn('subs',i)}</tr>`).join('');
   dollar('subs-b-total',sum(data.subs,'budget'));dollar('subs-a-total',sum(data.subs,'actual'));
 }
-function renderSavings(){
-  document.getElementById('savings-body').innerHTML=data.savings.map((r,i)=>`<tr data-sec="savings" data-i="${i}">${textCell(r.name,'Emergency fund')}${dateCell(r.date)}${numCell(r.budget,'100')}${numCell(r.actual,'100')}${delBtn('savings',i)}</tr>`).join('');
-  dollar('sav-b-total',sum(data.savings,'budget'));dollar('sav-a-total',sum(data.savings,'actual'));
-}
-function renderDebts(){
-  document.getElementById('debts-body').innerHTML=data.debts.map((r,i)=>`<tr data-sec="debts" data-i="${i}">${checkCell(r.checked)}${textCell(r.name,'Credit card / loan')}${dateCell(r.date)}${numCell(r.budget,'200')}${numCell(r.actual,'200')}${delBtn('debts',i)}</tr>`).join('');
-  dollar('debt-b-total',sum(data.debts,'budget'));dollar('debt-a-total',sum(data.debts,'actual'));
-}
-
 // ── STATS ─────────────────────────────────────────────────
 function sum(arr,key){return arr.reduce((s,r)=>s+(parseFloat(r[key])||0),0)}
 function dollar(id,v){
@@ -1315,25 +1287,23 @@ function updateStats(){
   const bB=sum(data.bills,'budget'),bA=sum(data.bills,'actual');
   const eB=sum(data.expenses,'budget'),eA=sum(data.expenses,'actual');
   const sB=sum(data.subs,'budget'),sA=sum(data.subs,'actual');
-  const savB=sum(data.savings,'budget'),savA=sum(data.savings,'actual');
-  const dB=sum(data.debts,'budget'),dA=sum(data.debts,'actual');
-  const totalExpB=bB+eB+sB+savB+dB,totalExpA=bA+eA+sA+savA+dA;
+  const totalExpB=bB+eB+sB,totalExpA=bA+eA+sA;
   const leftB=iB-totalExpB,leftA=iA-totalExpA;
   dollar('stat-income',iA);dollar('stat-expenses',totalExpA);
-  dollar('stat-left',leftA);dollar('stat-savings',savA);
-  ['income','bills','expenses','subs','savings','debts'].forEach((k,j)=>{
-    const vals=[iA,bA,eA,sA,savA,dA];
+  dollar('stat-left',leftA);
+  ['income','bills','expenses','subs'].forEach((k,j)=>{
+    const vals=[iA,bA,eA,sA];
     const el=document.getElementById(k+'-meta');
     if(el)el.textContent=vals[j]>0?'$'+vals[j].toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}):'';
   });
-  setcf('cf-income',iB,iA);setcf('cf-bills',bB,bA);setcf('cf-exp',eB,eA);
-  setcf('cf-sub',sB,sA);setcf('cf-sav',savB,savA);setcf('cf-debt',dB,dA);
-  setcf('cf-lo',leftB,leftA);
+  setcf('cf-income',iB,iA,true);setcf('cf-bills',bB,bA);setcf('cf-exp',eB,eA);
+  setcf('cf-sub',sB,sA);
+  setcf('cf-lo',leftB,leftA,true);
 }
 
-function setcf(id,b,a){
+function setcf(id,b,a,invert){
   dollar(id+'-b',b);dollar(id+'-a',a);
-  const d=b-a,el=document.getElementById(id+'-d');
+  const d=invert?a-b:b-a,el=document.getElementById(id+'-d');
   el.textContent=(d>=0?'+':'-')+'$'+Math.abs(d).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
   el.className='num '+(d>=0?'pos':'neg');
 }
@@ -1363,26 +1333,35 @@ function updateCharts(){
     muted:themeVar('--muted'),
   };
   const iA=sum(data.income,'actual'),bA=sum(data.bills,'actual'),eA=sum(data.expenses,'actual');
-  const sA=sum(data.subs,'actual'),savA=sum(data.savings,'actual'),dA=sum(data.debts,'actual');
+  const sA=sum(data.subs,'actual');
   const iB=sum(data.income,'budget'),bB=sum(data.bills,'budget'),eB=sum(data.expenses,'budget');
-  const sB=sum(data.subs,'budget'),savB=sum(data.savings,'budget'),dB=sum(data.debts,'budget');
-  const leftA=iA-bA-eA-sA-savA-dA;
-  const barLabels=['Budget','Bills','Spending','Subs','Savings','Debts'];
-  if(barChart){barChart.data.datasets[0].data=[iB,bB,eB,sB,savB,dB];barChart.data.datasets[1].data=[iA,bA,eA,sA,savA,dA];barChart.update()}
-  else barChart=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:barLabels,datasets:[{label:'Planned',data:[iB,bB,eB,sB,savB,dB],backgroundColor:colors.babyPink,borderRadius:6,barPercentage:.48},{label:'Actual',data:[iA,bA,eA,sA,savA,dA],backgroundColor:colors.sage,borderRadius:6,barPercentage:.48}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10,family:'Manrope'},boxWidth:10,color:colors.ink}}},scales:{x:{ticks:{font:{size:9,weight:'700',family:'Manrope'},color:colors.ink},grid:{display:false}},y:{ticks:{font:{size:9,family:'Manrope'},color:colors.muted,callback:v=>'$'+v},grid:{color:colors.line}}}}});
+  const sB=sum(data.subs,'budget');
+  const leftA=iA-bA-eA-sA;
+  const barLabels=['Budget','Bills','Spending','Subs'];
+  if(barChart){
+    barChart.data.labels=barLabels;
+    barChart.data.datasets[0].data=[iB,bB,eB,sB];
+    barChart.data.datasets[1].data=[iA,bA,eA,sA];
+    barChart.update();
+  }
+  else barChart=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:barLabels,datasets:[{label:'Planned',data:[iB,bB,eB,sB],backgroundColor:colors.babyPink,borderRadius:6,barPercentage:.48},{label:'Actual',data:[iA,bA,eA,sA],backgroundColor:colors.sage,borderRadius:6,barPercentage:.48}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10,family:'Manrope'},boxWidth:10,color:colors.ink}}},scales:{x:{ticks:{font:{size:9,weight:'700',family:'Manrope'},color:colors.ink},grid:{display:false}},y:{ticks:{font:{size:9,family:'Manrope'},color:colors.muted,callback:v=>'$'+v},grid:{color:colors.line}}}}});
   const pL=data.bills.filter(r=>r.name&&parseFloat(r.actual)>0).map(r=>r.name);
   const pV=data.bills.filter(r=>r.name&&parseFloat(r.actual)>0).map(r=>parseFloat(r.actual)||0);
   document.getElementById('pie-center').textContent='$'+(bA||0).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});
   if(pieChart){pieChart.data.labels=pL;pieChart.data.datasets[0].data=pV;pieChart.update()}
   else pieChart=new Chart(document.getElementById('pieChart'),{type:'pie',data:{labels:pL.length?pL:['No data'],datasets:[{data:pV.length?pV:[1],backgroundColor:pV.length?[colors.sand,colors.sage,colors.babyPink,colors.rose,colors.blushSoft,colors.mocha,colors.sageSoft,colors.olive]:['#eee'],borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
-  const dV=[bA,eA,sA,savA,dA,Math.max(leftA,0)];
+  const dV=[bA,eA,sA,Math.max(leftA,0)];
   document.getElementById('donut-center').textContent='$'+(Math.max(leftA,0)).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});
-  if(donutChart){donutChart.data.datasets[0].data=dV;donutChart.update()}
-  else donutChart=new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['Bills','Spending','Subs','Savings','Debts','Left'],datasets:[{data:dV,backgroundColor:[colors.sand,colors.rose,colors.babyPink,colors.sage,colors.olive,colors.sageDeep],borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:false}}}});
+  if(donutChart){
+    donutChart.data.labels=['Bills','Spending','Subs','Left'];
+    donutChart.data.datasets[0].data=dV;
+    donutChart.update();
+  }
+  else donutChart=new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['Bills','Spending','Subs','Left'],datasets:[{data:dV,backgroundColor:[colors.sand,colors.rose,colors.babyPink,colors.sageDeep],borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:false}}}});
 }
 
 // ── COLLAPSIBLE ────────────────────────────────────────────
-const sectionState={cashflow:true,income:true,bills:true,expenses:true,subs:true,savings:true,debts:true};
+const sectionState={cashflow:true,income:true,bills:true,expenses:true,subs:true};
 function toggleSection(sec){
   sectionState[sec]=!sectionState[sec];
   const body=document.getElementById(sec+'-body-wrap');
@@ -1400,8 +1379,6 @@ function onInput(el){
   else if(sec==='bills'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
   else if(sec==='expenses'){row.category=ins[0].value;row.budget=ins[1].value;row.actual=ins[2].value}
   else if(sec==='subs'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
-  else if(sec==='savings'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
-  else if(sec==='debts'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
   saveData();updateStats();updateCharts();
 }
 function onCheck(el){
