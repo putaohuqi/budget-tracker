@@ -833,28 +833,75 @@ input[type=checkbox]{
   .main-grid{
     grid-template-columns:1fr;
   }
+  .header-controls{
+    display:grid;
+    grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);
+    gap:.42rem;
+    align-items:stretch;
+  }
   .month-selector,
   .sync-actions{
     width:100%;
-    justify-content:center;
-    flex-wrap:wrap;
+    min-width:0;
     border-radius:24px;
   }
-  .sync-pill{
+  .month-selector{
+    justify-content:center;
+    flex-wrap:nowrap;
+    gap:.18rem;
+    padding:.12rem .42rem;
+  }
+  .month-selector label{
+    font-size:.54rem;
+  }
+  .month-selector select{
+    font-size:.72rem;
+  }
+  .sync-actions{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "goal button"
+      "status status";
     align-items:center;
+    gap:.12rem .28rem;
+    padding:.16rem .42rem;
+  }
+  .sync-pill{
+    grid-area:goal;
+    width:100%;
+    min-width:0;
+    align-items:flex-start;
+    gap:0;
+    padding-right:0;
+  }
+  #sync-btn{
+    grid-area:button;
+    justify-self:end;
+    padding:.34rem .58rem;
+    font-size:.62rem;
   }
   .sync-status-stack{
-    align-items:center;
+    grid-area:status;
     width:100%;
+    min-width:0;
+    align-items:flex-start;
+    gap:0;
   }
   #sync-status{
     width:100%;
-    text-align:center;
+    font-size:.55rem;
+    text-align:left;
   }
   #sync-timestamp{
     width:100%;
-    text-align:center;
+    font-size:.48rem;
+    line-height:1.15;
+    text-align:left;
     white-space:normal;
+  }
+  #savings-goal{
+    width:44px;
   }
   #auth-user-email{max-width:92px}
   table{font-size:.72rem}
