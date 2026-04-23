@@ -511,91 +511,6 @@ body::after{
   text-transform:uppercase;
 }
 
-/* ── CALENDAR ── */
-.cal-card{
-  background:rgba(255,255,255,0.8);
-  border-radius:18px;
-  border:1px solid rgba(176,143,122,0.22);
-  overflow:hidden;
-  box-shadow:0 10px 24px rgba(121,81,56,0.06);
-  margin:.78rem 0 0;
-}
-.cal-head{
-  cursor:pointer;
-  user-select:none;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:.5rem;
-  padding:.5rem .8rem;
-  background:linear-gradient(180deg,#e5e6b5 0%,#cad07d 100%);
-  color:var(--sage-deep);
-}
-.cal-head-title{
-  font-family:'Fraunces',serif;
-  font-size:1.02rem;
-  flex:1;
-  text-align:center;
-}
-.cal-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:3px;
-  padding:.6rem;
-  background:#faf8f3;
-}
-.cal-dh{
-  text-align:center;
-  font-size:.6rem;
-  font-weight:800;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  color:var(--muted);
-  padding:.25rem 0 .4rem;
-}
-.cal-day{
-  min-height:62px;
-  border-radius:8px;
-  padding:.25rem .3rem .2rem;
-  background:rgba(255,253,248,0.9);
-  border:1px solid rgba(176,143,122,0.1);
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-}
-.cal-day.other-month{
-  background:rgba(255,253,248,0.35);
-  opacity:.45;
-}
-.cal-day.today{
-  border-color:var(--mocha);
-  box-shadow:inset 0 0 0 1.5px var(--mocha);
-}
-.cal-dn{
-  font-size:.63rem;
-  font-weight:800;
-  color:var(--chocolate);
-  line-height:1;
-  margin-bottom:2px;
-}
-.cal-day.other-month .cal-dn{color:var(--muted);font-weight:600}
-.cal-chip{
-  font-size:.54rem;
-  font-weight:700;
-  border-radius:4px;
-  padding:.1rem .28rem;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:100%;
-  display:block;
-  line-height:1.4;
-}
-.cal-chip.income{background:#dfe2a5;color:var(--moss)}
-.cal-chip.bill{background:#e7e7bb;color:var(--sage-deep)}
-.cal-chip.expense{background:#ffe7e8;color:var(--rose-deep)}
-.cal-chip.sub{background:#f4d4d7;color:var(--mauve)}
-
 /* ── MAIN GRID ── */
 .main-grid{
   display:grid;
@@ -1102,19 +1017,6 @@ input[type=checkbox]{
       </div>
     </div>
   </section>
-
-  <!-- CALENDAR -->
-  <div class="cal-card">
-    <div class="cal-head" onclick="toggleCalendar()">
-      <span style="min-width:14px"></span>
-      <span class="cal-head-title">Monthly Calendar</span>
-      <span style="min-width:76px"></span>
-      <span class="section-chevron" id="cal-chev">▾</span>
-    </div>
-    <div id="cal-body-wrap" class="section-body">
-      <div class="cal-grid" id="cal-body"></div>
-    </div>
-  </div>
 
   <!-- MAIN DATA GRID -->
   <section class="main-grid">
@@ -1651,57 +1553,8 @@ function updateAuthUI(user){
 }
 
 // ── RENDERING ─────────────────────────────────────────────
-function renderCalendar(){
-  const body=document.getElementById('cal-body');
-  if(!body)return;
-  const MMAP={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
-  const m=document.getElementById('month-select').value;
-  const y=parseInt(document.getElementById('year-select').value);
-  const mi=MMAP[m];
-  const firstDow=new Date(y,mi,1).getDay();
-  const lastDate=new Date(y,mi+1,0).getDate();
-  const today=new Date();
-  const events={};
-  function addEv(dateStr,label,amount,type){
-    if(!dateStr)return;
-    if(!events[dateStr])events[dateStr]=[];
-    events[dateStr].push({label,amount,type});
-  }
-  (data.income||[]).forEach(r=>{if(r.source||parseFloat(r.budget))addEv(r.date,r.source||'Income',r.budget,'income')});
-  (data.bills||[]).forEach(r=>{if(r.name||parseFloat(r.amount))addEv(r.date,r.name||'Bill',r.amount,'bill')});
-  (data.subs||[]).forEach(r=>{if(r.name||parseFloat(r.amount))addEv(r.date,r.name||'Sub',r.amount,'sub')});
-  (data.expenses||[]).forEach(g=>(g.items||[]).forEach(item=>{
-    if(item.label||parseFloat(item.amount))addEv(item.date,item.label||g.category||'Expense',item.amount,'expense');
-  }));
-  let html='';
-  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d=>{html+=`<div class="cal-dh">${d}</div>`});
-  for(let i=0;i<firstDow;i++){
-    const pd=new Date(y,mi,1-firstDow+i);
-    html+=`<div class="cal-day other-month"><span class="cal-dn">${pd.getDate()}</span></div>`;
-  }
-  for(let d=1;d<=lastDate;d++){
-    const ds=`${y}-${String(mi+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const isToday=today.getFullYear()===y&&today.getMonth()===mi&&today.getDate()===d;
-    const chips=(events[ds]||[]).map(ev=>{
-      const lbl=(ev.label||'').slice(0,13);
-      const amt=ev.amount?` $${parseFloat(ev.amount).toFixed(2)}`:'';
-      return `<span class="cal-chip ${ev.type}">${lbl||amt}</span>`;
-    }).join('');
-    html+=`<div class="cal-day${isToday?' today':''}"><span class="cal-dn">${d}</span>${chips}</div>`;
-  }
-  const rem=(firstDow+lastDate)%7;
-  if(rem)for(let i=1;i<=7-rem;i++)html+=`<div class="cal-day other-month"><span class="cal-dn">${i}</span></div>`;
-  body.innerHTML=html;
-}
-function toggleCalendar(){
-  const wrap=document.getElementById('cal-body-wrap');
-  const chev=document.getElementById('cal-chev');
-  if(!wrap)return;
-  wrap.classList.toggle('collapsed');
-  if(chev)chev.textContent=wrap.classList.contains('collapsed')?'▸':'▾';
-}
 function renderAll(){
-  renderIncome();renderBills();renderExpenses();renderSubs();renderCalendar();
+  renderIncome();renderBills();renderExpenses();renderSubs();
   const goalInput=document.getElementById('savings-goal');
   if(goalInput)goalInput.value=data.savingsGoal||'';
   refreshMonthLabel();updateStats();updateCharts();refreshSyncTimestamp();
