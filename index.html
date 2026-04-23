@@ -4,6 +4,11 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Monthly Budget Tracker</title>
+<meta name="apple-mobile-web-app-title" content="Budget Tracker"/>
+<meta name="theme-color" content="#fbf8f1"/>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -82,7 +87,7 @@ body::after{
   z-index:4;
   max-width:1320px;
   margin:0 auto;
-  padding:2.2rem 1.2rem 6.2rem;
+  padding:1.45rem 1.1rem 4.3rem;
   text-align:center;
 }
 .page-header::before,
@@ -93,55 +98,55 @@ body::after{
   z-index:-1;
 }
 .page-header::before{
-  width:220px;height:220px;left:10px;top:28px;
+  width:170px;height:170px;left:22px;top:54px;
   background:radial-gradient(circle at 35% 35%, rgba(255,255,255,0.72), transparent 58%), rgba(255,219,221,0.42);
   border-radius:50%;
-  filter:blur(8px);
+  filter:blur(10px);
 }
 .page-header::after{
-  width:140px;height:140px;right:88px;top:42px;
+  width:108px;height:108px;right:102px;top:70px;
   background:rgba(229,230,181,0.22);
   border-radius:55% 45% 60% 40%;
   filter:blur(4px);
 }
 .hero-art{
   position:relative;
-  max-width:900px;
+  max-width:720px;
   margin:0 auto;
-  padding:.2rem 1rem 0;
+  padding:0 .8rem 0;
 }
 .header-title{
   font-family:'Fraunces',serif;
-  font-size:clamp(3.2rem,8vw,5.8rem);
+  font-size:clamp(2.5rem,6.2vw,4.85rem);
   color:var(--rose);
   line-height:.94;
-  letter-spacing:-.045em;
-  text-shadow:0 10px 22px rgba(167,98,107,0.08);
+  letter-spacing:-.04em;
+  text-shadow:0 7px 16px rgba(167,98,107,0.07);
 }
 .header-sub{
   position:static;
   display:block;
-  margin-top:.38rem;
+  margin-top:.18rem;
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(1.35rem,3vw,2.15rem);
+  font-size:clamp(.92rem,2vw,1.55rem);
   color:var(--sage-deep);
-  letter-spacing:.26em;
+  letter-spacing:.22em;
   text-transform:uppercase;
   opacity:.88;
 }
 .header-controls{
-  margin-top:1.8rem;
+  margin-top:1.05rem;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:.75rem;
+  gap:.45rem;
   flex-wrap:wrap;
 }
 .month-selector,
 .sync-actions{
   display:flex;
   align-items:center;
-  gap:.75rem;
+  gap:.45rem;
   background:rgba(255,253,248,0.88);
   border:1px solid rgba(176,143,122,0.26);
   border-radius:999px;
@@ -149,19 +154,19 @@ body::after{
   backdrop-filter:blur(8px);
 }
 .month-selector{
-  min-height:58px;
-  gap:.65rem;
-  padding:.22rem 1rem;
+  min-height:44px;
+  gap:.45rem;
+  padding:.08rem .72rem;
 }
 .sync-actions{
-  min-height:58px;
-  gap:.55rem;
-  padding:.22rem .9rem;
+  min-height:44px;
+  gap:.45rem;
+  padding:.08rem .68rem;
 }
 .month-selector label,
 .sync-pill-label,
 #sync-status{
-  font-size:.72rem;
+  font-size:.62rem;
   font-weight:800;
   letter-spacing:.08em;
   text-transform:uppercase;
@@ -169,7 +174,7 @@ body::after{
 }
 .month-selector select{
   font-family:'Manrope',sans-serif;
-  font-size:.95rem;
+  font-size:.78rem;
   font-weight:700;
   color:var(--sage-deep);
   border:none;
@@ -181,23 +186,23 @@ body::after{
   display:flex;
   flex-direction:column;
   align-items:flex-start;
-  gap:.08rem;
-  padding-right:.15rem;
-  line-height:1.02;
+  gap:.02rem;
+  padding-right:.08rem;
+  line-height:.98;
 }
 .sync-pill strong{
   font-family:'Fraunces',serif;
-  font-size:.9rem;
+  font-size:.76rem;
   color:var(--sage-deep);
   line-height:1;
 }
 #savings-goal{
-  width:110px;
+  width:58px;
   padding:0;
   border:none;
   background:transparent;
   color:var(--sage-deep);
-  font:700 1.05rem 'Fraunces',serif;
+  font:700 .84rem 'Fraunces',serif;
   outline:none;
   box-shadow:none;
 }
@@ -208,9 +213,9 @@ body::after{
   background:linear-gradient(135deg,var(--olive) 0%,var(--moss) 100%);
   color:#fffdf7;
   font-family:'Manrope',sans-serif;
-  font-size:.8rem;
+  font-size:.68rem;
   font-weight:800;
-  padding:.54rem .96rem;
+  padding:.38rem .74rem;
   cursor:pointer;
   transition:transform .15s ease,box-shadow .15s ease,opacity .15s ease;
   box-shadow:0 8px 18px rgba(112,108,62,0.16);
@@ -218,11 +223,12 @@ body::after{
 #sync-btn:hover{transform:translateY(-1px)}
 #sync-btn:disabled{cursor:wait;opacity:.72;transform:none}
 #sync-status{
-  min-width:150px;
+  min-width:72px;
   text-align:left;
   letter-spacing:.04em;
   text-transform:none;
   line-height:1.05;
+  font-size:.64rem;
 }
 #sync-status[data-tone="ok"]{color:var(--sage-deep)}
 #sync-status[data-tone="warn"]{color:var(--rose-deep)}
@@ -260,21 +266,21 @@ body::after{
   background:rgba(255,253,248,0.92);
   border:1px solid rgba(176,143,122,0.26);
   border-radius:999px;
-  padding:.4rem .65rem .4rem .95rem;
+  padding:.3rem .55rem .3rem .78rem;
   box-shadow:var(--shadow-soft);
 }
 #auth-user-email{
-  font-size:.75rem;
+  font-size:.68rem;
   font-weight:800;
   color:var(--sage-deep);
-  max-width:160px;
+  max-width:146px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
 #auth-signout-btn{
-  font-size:.72rem;
-  padding:.38rem .78rem;
+  font-size:.66rem;
+  padding:.32rem .64rem;
   border:1px solid rgba(176,143,122,0.26);
   background:transparent;
   color:var(--muted);
@@ -360,28 +366,28 @@ body::after{
   position:relative;
   z-index:1;
   width:min(1240px,calc(100% - 1.5rem));
-  margin:-3.6rem auto 2rem;
+  margin:-2.35rem auto 1.85rem;
   background:linear-gradient(180deg,rgba(255,253,248,0.97) 0%,rgba(249,243,234,0.94) 100%);
   border:1.5px solid rgba(176,143,122,0.24);
   box-shadow:var(--shadow);
   border-radius:30px;
-  padding:1rem;
+  padding:.9rem;
   backdrop-filter:blur(8px);
 }
 .hero-stats{
   display:grid;
   grid-template-columns:1.12fr repeat(3,1fr);
-  gap:1rem;
+  gap:.85rem;
   padding:0;
 }
 .board-guide{
-  margin-top:.8rem;
-  padding:.88rem 1.1rem;
+  margin-top:.7rem;
+  padding:.76rem .95rem;
   border:1px solid rgba(176,143,122,0.22);
   border-radius:20px;
   background:linear-gradient(180deg,#fff8f3 0%,#faf1e8 100%);
   color:var(--muted);
-  font-size:.82rem;
+  font-size:.78rem;
   line-height:1.55;
   text-align:center;
 }
@@ -391,10 +397,10 @@ body::after{
 }
 .month-card,
 .hero-card{
-  min-height:98px;
+  min-height:88px;
   border:1px solid rgba(176,143,122,0.24);
   border-radius:22px;
-  padding:.95rem 1rem;
+  padding:.82rem .9rem;
   text-align:center;
 }
 .month-card{
@@ -409,12 +415,12 @@ body::after{
 }
 .month-name{
   font-family:'Fraunces',serif;
-  font-size:2rem;
+  font-size:1.72rem;
   color:var(--sage-deep);
   line-height:1;
 }
 .month-year{
-  font-size:.8rem;
+  font-size:.74rem;
   font-weight:800;
   letter-spacing:.12em;
   color:var(--muted);
@@ -434,9 +440,12 @@ body::after{
 .hero-card.expenses{
   background:linear-gradient(180deg,#ffe7e8 0%,#f6d7d9 100%);
 }
+.hero-card.left.over{
+  background:linear-gradient(180deg,#ffe7e8 0%,#f6d7d9 100%);
+}
 .hero-label{
   font-family:'Fraunces',serif;
-  font-size:1rem;
+  font-size:.9rem;
   letter-spacing:0;
   text-transform:none;
 }
@@ -445,19 +454,21 @@ body::after{
 .hero-card.expenses .hero-label{color:var(--sage-deep)}
 .hero-amount{
   font-family:'Cormorant Garamond',serif;
-  font-size:1.55rem;
+  font-size:1.38rem;
   font-weight:700;
 }
 .hero-card.income .hero-amount,
 .hero-card.left .hero-amount{color:var(--chocolate)}
 .hero-card.expenses .hero-amount{color:var(--rose-deep)}
+.hero-card.left.over .hero-label,
+.hero-card.left.over .hero-amount{color:var(--rose-deep)}
 
 /* ── CHARTS ROW ── */
 .charts-row{
   display:grid;
   grid-template-columns:1.12fr 1fr 1fr;
   gap:.85rem;
-  padding:.85rem 0 0;
+  padding:.72rem 0 0;
 }
 .chart-card{
   background:rgba(255,255,255,0.78);
@@ -476,7 +487,7 @@ body::after{
 }
 .chart-wrap{
   position:relative;
-  height:190px;
+  height:176px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -507,8 +518,8 @@ body::after{
 .main-grid{
   display:grid;
   grid-template-columns:1.04fr 1.04fr 1.34fr;
-  gap:.85rem;
-  padding:.85rem 0 0;
+  gap:.78rem;
+  padding:.78rem 0 0;
   align-items:stretch;
   grid-auto-rows:minmax(220px,auto);
 }
@@ -707,11 +718,11 @@ input[type=checkbox]{
     margin-bottom:1.4rem;
   }
   .page-header{
-    padding:1.35rem 1rem 6.2rem;
+    padding:1rem 1rem 4.6rem;
   }
   .header-sub{
     margin-top:.3rem;
-    letter-spacing:.18em;
+    letter-spacing:.2em;
   }
   .hero-stats,
   .charts-row{
@@ -724,7 +735,7 @@ input[type=checkbox]{
   body::after{display:none}
   .budget-board{
     width:calc(100% - 1rem);
-    margin:-2.7rem auto 1.4rem;
+    margin:-1.9rem auto 1.4rem;
     padding:.7rem;
   }
   .hero-stats,
@@ -817,8 +828,8 @@ input[type=checkbox]{
         <span class="sync-pill-label">Savings Goal</span>
         <input id="savings-goal" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$0" oninput="updateSavingsGoal(this.value)"/>
       </div>
-      <button id="sync-btn" onclick="manualSave()">Save now</button>
-      <span id="sync-status" data-tone="neutral">Local mode: sign in to sync.</span>
+      <button id="sync-btn" onclick="manualSave()">Save</button>
+      <span id="sync-status" data-tone="neutral">Local only.</span>
     </div>
   </div>
 </header>
@@ -833,11 +844,11 @@ input[type=checkbox]{
     </div>
     <div class="hero-card income"><div class="hero-label">Monthly Budget</div><div class="hero-amount" id="stat-income">$0.00</div></div>
     <div class="hero-card expenses"><div class="hero-label">Spent So Far</div><div class="hero-amount" id="stat-expenses">$0.00</div></div>
-    <div class="hero-card left"><div class="hero-label">Left to Spend</div><div class="hero-amount" id="stat-left">$0.00</div></div>
+    <div class="hero-card left" id="stat-left-card"><div class="hero-label" id="stat-left-label">Left to Spend</div><div class="hero-amount" id="stat-left">$0.00</div></div>
   </section>
 
   <section class="board-guide">
-    Add your monthly allowance or total available money in <strong>Budget Setup</strong>, then log rent, groceries, dining out, subscriptions, and other purchases below. The tracker subtracts everything you spend from your monthly budget automatically.
+    Set your total monthly budget in <strong>Budget Setup</strong>, then enter what each bill, subscription, or purchase cost. The tracker subtracts those amounts automatically and shows what you still have left.
   </section>
 
   <!-- CHARTS -->
@@ -850,14 +861,14 @@ input[type=checkbox]{
       <div class="chart-title">Monthly Bill Breakdown</div>
       <div class="chart-wrap">
         <canvas id="pieChart"></canvas>
-        <div class="donut-center"><div class="donut-val" id="pie-center">$0</div><div class="donut-lbl">total bills</div></div>
+        <div class="donut-center"><div class="donut-val" id="pie-center">$0</div><div class="donut-lbl" id="pie-label">total bills</div></div>
       </div>
     </div>
     <div class="chart-card">
       <div class="chart-title">Spending Overview</div>
       <div class="chart-wrap">
         <canvas id="donutChart"></canvas>
-        <div class="donut-center"><div class="donut-val" id="donut-center">$0</div><div class="donut-lbl">left to spend</div></div>
+        <div class="donut-center"><div class="donut-val" id="donut-center">$0</div><div class="donut-lbl" id="donut-label">left to spend</div></div>
       </div>
     </div>
   </section>
@@ -876,14 +887,17 @@ input[type=checkbox]{
     <div class="section-body" id="cashflow-body-wrap">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Category</th><th>Budget</th><th>Actual</th><th>Diff</th></tr></thead>
+          <thead><tr><th>Category</th><th>Amount</th></tr></thead>
           <tbody>
-            <tr><td>Budget</td><td class="num" id="cf-income-b">$0</td><td class="num" id="cf-income-a">$0</td><td class="num pos" id="cf-income-d">$0</td></tr>
-            <tr><td>Monthly Bills</td><td class="num" id="cf-bills-b">$0</td><td class="num" id="cf-bills-a">$0</td><td class="num" id="cf-bills-d">$0</td></tr>
-            <tr><td>Everyday Spending</td><td class="num" id="cf-exp-b">$0</td><td class="num" id="cf-exp-a">$0</td><td class="num" id="cf-exp-d">$0</td></tr>
-            <tr><td>Subscriptions</td><td class="num" id="cf-sub-b">$0</td><td class="num" id="cf-sub-a">$0</td><td class="num" id="cf-sub-d">$0</td></tr>
+            <tr><td>Monthly Budget</td><td class="num" id="cf-budget">$0</td></tr>
+            <tr><td>Monthly Bills</td><td class="num" id="cf-bills">$0</td></tr>
+            <tr><td>Everyday Spending</td><td class="num" id="cf-exp">$0</td></tr>
+            <tr><td>Subscriptions</td><td class="num" id="cf-sub">$0</td></tr>
           </tbody>
-          <tfoot><tr><td><strong>Remaining</strong></td><td class="num" id="cf-lo-b">$0</td><td class="num" id="cf-lo-a">$0</td><td class="num" id="cf-lo-d">$0</td></tr></tfoot>
+          <tfoot>
+            <tr><td><strong>Spent So Far</strong></td><td class="num" id="cf-spent">$0</td></tr>
+            <tr><td><strong>Left to Spend</strong></td><td class="num" id="cf-left">$0</td></tr>
+          </tfoot>
         </table>
       </div>
     </div>
@@ -900,9 +914,9 @@ input[type=checkbox]{
     <div class="section-body" id="income-body-wrap">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Budget Source</th><th>Date</th><th>Planned</th><th>Available</th><th></th></tr></thead>
+          <thead><tr><th>Budget Source</th><th>Date</th><th>Amount</th><th></th></tr></thead>
           <tbody id="income-body"></tbody>
-          <tfoot><tr><td colspan="2"><strong>Total Budget</strong></td><td class="num" id="income-b-total">$0</td><td class="num" id="income-a-total">$0</td><td></td></tr></tfoot>
+          <tfoot><tr><td colspan="2"><strong>Total Budget</strong></td><td class="num" id="income-b-total">$0</td><td></td></tr></tfoot>
         </table>
       </div>
       <button class="add-row-btn" onclick="addRow('income')">+ Add row</button>
@@ -920,9 +934,9 @@ input[type=checkbox]{
     <div class="section-body" id="bills-body-wrap">
       <div class="tbl-wrap">
         <table class="pink-head">
-          <thead><tr><th></th><th>Bill Name</th><th>Due Date</th><th>Planned</th><th>Spent</th><th></th></tr></thead>
+          <thead><tr><th></th><th>Bill Name</th><th>Due Date</th><th>Cost</th><th></th></tr></thead>
           <tbody id="bills-body"></tbody>
-          <tfoot><tr><td colspan="3"><strong>Total Bills</strong></td><td class="num" id="bills-b-total">$0</td><td class="num" id="bills-a-total">$0</td><td></td></tr></tfoot>
+          <tfoot><tr><td colspan="3"><strong>Total Bills</strong></td><td class="num" id="bills-a-total">$0</td><td></td></tr></tfoot>
         </table>
       </div>
       <button class="add-row-btn" onclick="addRow('bills')">+ Add row</button>
@@ -940,9 +954,9 @@ input[type=checkbox]{
     <div class="section-body" id="expenses-body-wrap">
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Category</th><th>Planned</th><th>Spent</th><th></th></tr></thead>
+          <thead><tr><th>Category</th><th>Cost</th><th></th></tr></thead>
           <tbody id="expenses-body"></tbody>
-          <tfoot><tr><td><strong>Total Expenses</strong></td><td class="num" id="exp-b-total">$0</td><td class="num" id="exp-a-total">$0</td><td></td></tr></tfoot>
+          <tfoot><tr><td><strong>Total Expenses</strong></td><td class="num" id="exp-a-total">$0</td><td></td></tr></tfoot>
         </table>
       </div>
       <button class="add-row-btn" onclick="addRow('expenses')">+ Add row</button>
@@ -960,9 +974,9 @@ input[type=checkbox]{
     <div class="section-body" id="subs-body-wrap">
       <div class="tbl-wrap">
         <table class="pink-head">
-          <thead><tr><th></th><th>Subscription</th><th>Due Date</th><th>Planned</th><th>Spent</th><th></th></tr></thead>
+          <thead><tr><th></th><th>Subscription</th><th>Due Date</th><th>Cost</th><th></th></tr></thead>
           <tbody id="subs-body"></tbody>
-          <tfoot><tr><td colspan="3"><strong>Total Subs</strong></td><td class="num" id="subs-b-total">$0</td><td class="num" id="subs-a-total">$0</td><td></td></tr></tfoot>
+          <tfoot><tr><td colspan="3"><strong>Total Subs</strong></td><td class="num" id="subs-a-total">$0</td><td></td></tr></tfoot>
         </table>
       </div>
       <button class="add-row-btn" onclick="addRow('subs')">+ Add row</button>
@@ -1006,17 +1020,50 @@ function getKey(){
 }
 
 function emptySection(type){
-  if(type==='income')return [{source:'',date:'',budget:'',actual:''}];
-  if(type==='bills')return [{checked:false,name:'',date:'',budget:'',actual:''}];
-  if(type==='expenses')return [{category:'',budget:'',actual:''}];
-  if(type==='subs')return [{checked:false,name:'',date:'',budget:'',actual:''}];
+  if(type==='income')return [{source:'',date:'',budget:''}];
+  if(type==='bills')return [{checked:false,name:'',date:'',amount:''}];
+  if(type==='expenses')return [{category:'',amount:''}];
+  if(type==='subs')return [{checked:false,name:'',date:'',amount:''}];
   return [];
 }
 
+function pickValue(row,...keys){
+  for(const key of keys){
+    if(row&&row[key]!==undefined&&row[key]!==null&&row[key]!=='')return row[key];
+  }
+  return '';
+}
+
 function fillEmpty(){
-  BUDGET_SECTIONS.forEach(t=>{
-    if(!data[t]||!data[t].length)data[t]=emptySection(t);
-  });
+  data.income=Array.isArray(data.income)&&data.income.length
+    ? data.income.map(row=>({
+        source:row&&row.source||'',
+        date:row&&row.date||'',
+        budget:pickValue(row,'budget','actual')
+      }))
+    : emptySection('income');
+  data.bills=Array.isArray(data.bills)&&data.bills.length
+    ? data.bills.map(row=>({
+        checked:!!(row&&row.checked),
+        name:row&&row.name||'',
+        date:row&&row.date||'',
+        amount:pickValue(row,'amount','actual','budget')
+      }))
+    : emptySection('bills');
+  data.expenses=Array.isArray(data.expenses)&&data.expenses.length
+    ? data.expenses.map(row=>({
+        category:row&&row.category||'',
+        amount:pickValue(row,'amount','actual','budget')
+      }))
+    : emptySection('expenses');
+  data.subs=Array.isArray(data.subs)&&data.subs.length
+    ? data.subs.map(row=>({
+        checked:!!(row&&row.checked),
+        name:row&&row.name||'',
+        date:row&&row.date||'',
+        amount:pickValue(row,'amount','actual','budget')
+      }))
+    : emptySection('subs');
   if(typeof data.savingsGoal==='undefined'||data.savingsGoal===null)data.savingsGoal='';
 }
 
@@ -1065,9 +1112,9 @@ function setSyncButtonBusy(isBusy){
   if(!btn)return;
   btn.disabled=!!isBusy;
   if(isBusy){
-    btn.textContent=currentUser?'Syncing...':'Saving...';
+    btn.textContent=currentUser?'Syncing':'Saving';
   }else{
-    btn.textContent=currentUser?'Sync now':'Save now';
+    btn.textContent=currentUser?'Sync':'Save';
   }
 }
 
@@ -1087,10 +1134,10 @@ async function persistBudget(options){
   saveTimer=null;
   if(currentUser){
     setSyncButtonBusy(true);
-    if(!settings.quiet)setSyncStatus(settings.manual?'Syncing this budget to Firebase...':'Syncing to Firebase...','saving');
+    if(!settings.quiet)setSyncStatus(settings.manual?'Syncing...':'Syncing...','saving');
     try{
       await getBudgetDocRef().set(data);
-      if(!settings.quiet)setSyncStatus(settings.manual?'Saved to Firebase.':'Synced to Firebase.','ok');
+      if(!settings.quiet)setSyncStatus(settings.manual?'Saved.':'Synced.','ok');
     }catch(e){
       console.error('Save error',e);
       setSyncStatus(friendlySyncError(e),'error');
@@ -1112,14 +1159,14 @@ async function loadData(){
       const snap=await getBudgetDocRef().get();
       if(snap.exists){
         data=snap.data()||{};
-        setSyncStatus('Loaded from Firebase.','ok');
+        setSyncStatus('Synced.','ok');
       }else if(hasMeaningfulData(localDraft)){
         data=localDraft;
         await getBudgetDocRef().set(data);
-        setSyncStatus('Imported your local draft into Firebase.','ok');
+        setSyncStatus('Draft imported.','ok');
       }else{
         data={};
-        setSyncStatus('New cloud budget ready to sync.','neutral');
+        setSyncStatus('Cloud ready.','neutral');
       }
     }catch(e){
       console.error('Load error',e);
@@ -1128,7 +1175,7 @@ async function loadData(){
     }
   }else{
     data=parseLocalBudget(currentKey);
-    setSyncStatus('Local mode: sign in to sync with Firebase.','neutral');
+    setSyncStatus('Local only.','neutral');
   }
   fillEmpty();
 }
@@ -1136,11 +1183,11 @@ async function loadData(){
 function saveData(){
   if(currentUser){
     clearTimeout(saveTimer);
-    setSyncStatus('Unsynced changes.','warn');
+    setSyncStatus('Unsynced.','warn');
     saveTimer=setTimeout(()=>{persistBudget({quiet:false});},600);
   }else{
     localStorage.setItem('budget_'+currentKey,JSON.stringify(data));
-    setSyncStatus('Saved locally on this device.','ok');
+    setSyncStatus('Saved.','ok');
   }
 }
 
@@ -1261,52 +1308,66 @@ function checkCell(v){return `<td style="text-align:center"><input type="checkbo
 function delBtn(sec,i){return `<td><button onclick="delRow('${sec}',${i})" style="background:none;border:none;cursor:pointer;color:#ccc;font-size:11px" title="remove">✕</button></td>`}
 
 function renderIncome(){
-  document.getElementById('income-body').innerHTML=data.income.map((r,i)=>`<tr data-sec="income" data-i="${i}">${textCell(r.source,'Allowance / transfer')}${dateCell(r.date)}${numCell(r.budget,'1500')}${numCell(r.actual,'1500')}${delBtn('income',i)}</tr>`).join('');
-  dollar('income-b-total',sum(data.income,'budget'));dollar('income-a-total',sum(data.income,'actual'));
+  document.getElementById('income-body').innerHTML=data.income.map((r,i)=>`<tr data-sec="income" data-i="${i}">${textCell(r.source,'Paycheque / allowance')}${dateCell(r.date)}${numCell(r.budget,'500')}${delBtn('income',i)}</tr>`).join('');
+  dollar('income-b-total',sum(data.income,'budget'));
 }
 function renderBills(){
-  document.getElementById('bills-body').innerHTML=data.bills.map((r,i)=>`<tr data-sec="bills" data-i="${i}">${checkCell(r.checked)}${textCell(r.name,'Rent / Hydro / Internet')}${dateCell(r.date)}${numCell(r.budget,'900')}${numCell(r.actual,'900')}${delBtn('bills',i)}</tr>`).join('');
-  dollar('bills-b-total',sum(data.bills,'budget'));dollar('bills-a-total',sum(data.bills,'actual'));
+  document.getElementById('bills-body').innerHTML=data.bills.map((r,i)=>`<tr data-sec="bills" data-i="${i}">${checkCell(r.checked)}${textCell(r.name,'Rent / Hydro / Internet')}${dateCell(r.date)}${numCell(r.amount,'900')}${delBtn('bills',i)}</tr>`).join('');
+  dollar('bills-a-total',sum(data.bills,'amount'));
 }
 function renderExpenses(){
-  document.getElementById('expenses-body').innerHTML=data.expenses.map((r,i)=>`<tr data-sec="expenses" data-i="${i}">${textCell(r.category,'Groceries / Dining / Shopping')}${numCell(r.budget,'120')}${numCell(r.actual,'54.80')}${delBtn('expenses',i)}</tr>`).join('');
-  dollar('exp-b-total',sum(data.expenses,'budget'));dollar('exp-a-total',sum(data.expenses,'actual'));
+  document.getElementById('expenses-body').innerHTML=data.expenses.map((r,i)=>`<tr data-sec="expenses" data-i="${i}">${textCell(r.category,'Groceries / Dining / Shopping')}${numCell(r.amount,'54.80')}${delBtn('expenses',i)}</tr>`).join('');
+  dollar('exp-a-total',sum(data.expenses,'amount'));
 }
 function renderSubs(){
-  document.getElementById('subs-body').innerHTML=data.subs.map((r,i)=>`<tr data-sec="subs" data-i="${i}">${checkCell(r.checked)}${textCell(r.name,'Netflix / Spotify')}${dateCell(r.date)}${numCell(r.budget,'17.99')}${numCell(r.actual,'17.99')}${delBtn('subs',i)}</tr>`).join('');
-  dollar('subs-b-total',sum(data.subs,'budget'));dollar('subs-a-total',sum(data.subs,'actual'));
+  document.getElementById('subs-body').innerHTML=data.subs.map((r,i)=>`<tr data-sec="subs" data-i="${i}">${checkCell(r.checked)}${textCell(r.name,'Netflix / Spotify')}${dateCell(r.date)}${numCell(r.amount,'17.99')}${delBtn('subs',i)}</tr>`).join('');
+  dollar('subs-a-total',sum(data.subs,'amount'));
 }
 // ── STATS ─────────────────────────────────────────────────
 function sum(arr,key){return arr.reduce((s,r)=>s+(parseFloat(r[key])||0),0)}
+function formatMoney(v,digits){
+  const amount=Number(v)||0;
+  const cents=digits===undefined?2:digits;
+  return `${amount<0?'-':''}$${Math.abs(amount).toLocaleString('en',{minimumFractionDigits:cents,maximumFractionDigits:cents})}`;
+}
 function dollar(id,v){
   const el=document.getElementById(id);
-  if(el)el.textContent='$'+v.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if(el)el.textContent=formatMoney(v);
 }
 
 function updateStats(){
-  const iB=sum(data.income,'budget'),iA=sum(data.income,'actual');
-  const bB=sum(data.bills,'budget'),bA=sum(data.bills,'actual');
-  const eB=sum(data.expenses,'budget'),eA=sum(data.expenses,'actual');
-  const sB=sum(data.subs,'budget'),sA=sum(data.subs,'actual');
-  const totalExpB=bB+eB+sB,totalExpA=bA+eA+sA;
-  const leftB=iB-totalExpB,leftA=iA-totalExpA;
-  dollar('stat-income',iA);dollar('stat-expenses',totalExpA);
-  dollar('stat-left',leftA);
-  ['income','bills','expenses','subs'].forEach((k,j)=>{
-    const vals=[iA,bA,eA,sA];
-    const el=document.getElementById(k+'-meta');
-    if(el)el.textContent=vals[j]>0?'$'+vals[j].toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}):'';
-  });
-  setcf('cf-income',iB,iA,true);setcf('cf-bills',bB,bA);setcf('cf-exp',eB,eA);
-  setcf('cf-sub',sB,sA);
-  setcf('cf-lo',leftB,leftA,true);
-}
+  const budgetTotal=sum(data.income,'budget');
+  const billsSpent=sum(data.bills,'amount');
+  const expensesSpent=sum(data.expenses,'amount');
+  const subsSpent=sum(data.subs,'amount');
+  const totalSpent=billsSpent+expensesSpent+subsSpent;
+  const left=budgetTotal-totalSpent;
 
-function setcf(id,b,a,invert){
-  dollar(id+'-b',b);dollar(id+'-a',a);
-  const d=invert?a-b:b-a,el=document.getElementById(id+'-d');
-  el.textContent=(d>=0?'+':'-')+'$'+Math.abs(d).toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
-  el.className='num '+(d>=0?'pos':'neg');
+  dollar('stat-income',budgetTotal);
+  dollar('stat-expenses',totalSpent);
+  dollar('stat-left',left);
+
+  const leftCard=document.getElementById('stat-left-card');
+  const leftLabel=document.getElementById('stat-left-label');
+  if(leftCard)leftCard.classList.toggle('over',left<0);
+  if(leftLabel)leftLabel.textContent=left<0?'Over Budget':'Left to Spend';
+
+  const metaValues={income:budgetTotal,bills:billsSpent,expenses:expensesSpent,subs:subsSpent};
+  Object.entries(metaValues).forEach(([key,val])=>{
+    const el=document.getElementById(key+'-meta');
+    if(el)el.textContent=val>0?formatMoney(val):'';
+  });
+  const cashflowMeta=document.getElementById('cashflow-meta');
+  if(cashflowMeta)cashflowMeta.textContent=formatMoney(left);
+
+  dollar('cf-budget',budgetTotal);
+  dollar('cf-bills',billsSpent);
+  dollar('cf-exp',expensesSpent);
+  dollar('cf-sub',subsSpent);
+  dollar('cf-spent',totalSpent);
+  dollar('cf-left',left);
+  const leftCell=document.getElementById('cf-left');
+  if(leftCell)leftCell.className='num '+(left>=0?'pos':'neg');
 }
 
 // ── CHARTS ─────────────────────────────────────────────────
@@ -1333,32 +1394,38 @@ function updateCharts(){
     ink:themeVar('--ink'),
     muted:themeVar('--muted'),
   };
-  const iA=sum(data.income,'actual'),bA=sum(data.bills,'actual'),eA=sum(data.expenses,'actual');
-  const sA=sum(data.subs,'actual');
-  const iB=sum(data.income,'budget'),bB=sum(data.bills,'budget'),eB=sum(data.expenses,'budget');
-  const sB=sum(data.subs,'budget');
-  const leftA=iA-bA-eA-sA;
-  const barLabels=['Budget','Bills','Spending','Subs'];
+  const budgetTotal=sum(data.income,'budget');
+  const billsSpent=sum(data.bills,'amount');
+  const expensesSpent=sum(data.expenses,'amount');
+  const subsSpent=sum(data.subs,'amount');
+  const totalSpent=billsSpent+expensesSpent+subsSpent;
+  const left=budgetTotal-totalSpent;
+  const barLabels=['Budget','Spent'];
+  const barValues=[budgetTotal,totalSpent];
+  const barColors=[colors.sageDeep,left<0?colors.roseDeep:colors.rose];
   if(barChart){
     barChart.data.labels=barLabels;
-    barChart.data.datasets[0].data=[iB,bB,eB,sB];
-    barChart.data.datasets[1].data=[iA,bA,eA,sA];
+    barChart.data.datasets[0].data=barValues;
+    barChart.data.datasets[0].backgroundColor=barColors;
     barChart.update();
   }
-  else barChart=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:barLabels,datasets:[{label:'Planned',data:[iB,bB,eB,sB],backgroundColor:colors.babyPink,borderRadius:6,barPercentage:.48},{label:'Actual',data:[iA,bA,eA,sA],backgroundColor:colors.sage,borderRadius:6,barPercentage:.48}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10,family:'Manrope'},boxWidth:10,color:colors.ink}}},scales:{x:{ticks:{font:{size:9,weight:'700',family:'Manrope'},color:colors.ink},grid:{display:false}},y:{ticks:{font:{size:9,family:'Manrope'},color:colors.muted,callback:v=>'$'+v},grid:{color:colors.line}}}}});
-  const pL=data.bills.filter(r=>r.name&&parseFloat(r.actual)>0).map(r=>r.name);
-  const pV=data.bills.filter(r=>r.name&&parseFloat(r.actual)>0).map(r=>parseFloat(r.actual)||0);
-  document.getElementById('pie-center').textContent='$'+(bA||0).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});
+  else barChart=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:barLabels,datasets:[{label:'Amount',data:barValues,backgroundColor:barColors,borderRadius:8,maxBarThickness:64}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10,weight:'700',family:'Manrope'},color:colors.ink},grid:{display:false}},y:{ticks:{font:{size:9,family:'Manrope'},color:colors.muted,callback:v=>formatMoney(v,0)},grid:{color:colors.line}}}}});
+  const pL=data.bills.filter(r=>r.name&&parseFloat(r.amount)>0).map(r=>r.name);
+  const pV=data.bills.filter(r=>r.name&&parseFloat(r.amount)>0).map(r=>parseFloat(r.amount)||0);
+  document.getElementById('pie-center').textContent=formatMoney(billsSpent,0);
+  document.getElementById('pie-label').textContent='total bills';
   if(pieChart){pieChart.data.labels=pL;pieChart.data.datasets[0].data=pV;pieChart.update()}
   else pieChart=new Chart(document.getElementById('pieChart'),{type:'pie',data:{labels:pL.length?pL:['No data'],datasets:[{data:pV.length?pV:[1],backgroundColor:pV.length?[colors.sand,colors.sage,colors.babyPink,colors.rose,colors.blushSoft,colors.mocha,colors.sageSoft,colors.olive]:['#eee'],borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
-  const dV=[bA,eA,sA,Math.max(leftA,0)];
-  document.getElementById('donut-center').textContent='$'+(Math.max(leftA,0)).toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0});
+  const dV=[billsSpent,expensesSpent,subsSpent,Math.abs(left)];
+  document.getElementById('donut-center').textContent=formatMoney(Math.abs(left),0);
+  document.getElementById('donut-label').textContent=left<0?'over budget':'left to spend';
   if(donutChart){
-    donutChart.data.labels=['Bills','Spending','Subs','Left'];
+    donutChart.data.labels=['Bills','Spending','Subs',left<0?'Over':'Left'];
     donutChart.data.datasets[0].data=dV;
+    donutChart.data.datasets[0].backgroundColor=[colors.sand,colors.rose,colors.babyPink,left<0?colors.roseDeep:colors.sageDeep];
     donutChart.update();
   }
-  else donutChart=new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['Bills','Spending','Subs','Left'],datasets:[{data:dV,backgroundColor:[colors.sand,colors.rose,colors.babyPink,colors.sageDeep],borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:false}}}});
+  else donutChart=new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['Bills','Spending','Subs',left<0?'Over':'Left'],datasets:[{data:dV,backgroundColor:[colors.sand,colors.rose,colors.babyPink,left<0?colors.roseDeep:colors.sageDeep],borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:false}}}});
 }
 
 // ── COLLAPSIBLE ────────────────────────────────────────────
@@ -1376,10 +1443,10 @@ function onInput(el){
   const tr=el.closest('tr'),sec=tr.dataset.sec,i=parseInt(tr.dataset.i);
   const ins=tr.querySelectorAll('input[type=text],input[type=number],input[type=date]');
   const row=data[sec][i];
-  if(sec==='income'){row.source=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
-  else if(sec==='bills'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
-  else if(sec==='expenses'){row.category=ins[0].value;row.budget=ins[1].value;row.actual=ins[2].value}
-  else if(sec==='subs'){row.name=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value;row.actual=ins[3].value}
+  if(sec==='income'){row.source=ins[0].value;row.date=ins[1].value;row.budget=ins[2].value}
+  else if(sec==='bills'){row.name=ins[0].value;row.date=ins[1].value;row.amount=ins[2].value}
+  else if(sec==='expenses'){row.category=ins[0].value;row.amount=ins[1].value}
+  else if(sec==='subs'){row.name=ins[0].value;row.date=ins[1].value;row.amount=ins[2].value}
   saveData();updateStats();updateCharts();
 }
 function onCheck(el){
