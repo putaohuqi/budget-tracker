@@ -100,8 +100,8 @@
   --blush-soft-rgb:221,232,243;
 }
 :root[data-palette="summer"]{
-  --sand:#FFF1AB;
-  --sand-rgb:255,241,171;
+  --sand:#F7E8B9;
+  --sand-rgb:247,232,185;
   --mocha:#C49A6C;
   --mocha-rgb:196,154,108;
   --chocolate:#7A512B;
@@ -115,19 +115,19 @@
   --dusty-rose-rgb:118,185,226;
   --mauve:#78A2D2;
   --mauve-rgb:120,162,210;
-  --light-sage:#FEFFAF;
-  --light-sage-rgb:254,255,175;
-  --meadow:#FFF4BB;
-  --meadow-rgb:255,244,187;
+  --light-sage:#F8F1CF;
+  --light-sage-rgb:248,241,207;
+  --meadow:#F3E7BE;
+  --meadow-rgb:243,231,190;
   --olive:#A8CEF0;
   --moss:#8D683F;
   --moss-rgb:141,104,63;
-  --bg:#FFF9D8;
-  --bg-rgb:255,249,216;
+  --bg:#FBF7E8;
+  --bg-rgb:251,247,232;
   --paper:#FCFCF5;
   --paper-rgb:252,252,245;
-  --paper-soft:#FFF8D0;
-  --paper-soft-rgb:255,248,208;
+  --paper-soft:#FAF4E1;
+  --paper-soft-rgb:250,244,225;
   --paper-blush:#EAF5FB;
   --paper-blush-rgb:234,245,251;
   --blush-soft:#E3F1F9;
@@ -1346,6 +1346,28 @@ function seasonalPaletteForMonth(monthName){
   if(idx>=4&&idx<=7)return 'summer';
   return 'autumn';
 }
+function monthPickerSeasonColors(monthName){
+  const palette=seasonalPaletteForMonth(monthName);
+  if(palette==='winter'){
+    return {
+      fill:'#8EB1D1',
+      track:'rgba(182,198,212,0.24)',
+      empty:'rgba(117,136,156,0.46)'
+    };
+  }
+  if(palette==='summer'){
+    return {
+      fill:'#F7E8B9',
+      track:'rgba(196,154,108,0.2)',
+      empty:'rgba(196,154,108,0.42)'
+    };
+  }
+  return {
+    fill:'#799851',
+    track:'rgba(159,184,120,0.26)',
+    empty:'rgba(76,61,25,0.44)'
+  };
+}
 function applySeasonalPalette(){
   const monthSelect=document.getElementById('month-select');
   const monthName=monthSelect&&monthSelect.value ? monthSelect.value : MONTHS[new Date().getMonth()];
@@ -1812,12 +1834,13 @@ function renderMonthPicker(){
   MONTHS.forEach((mname,mi)=>{
     const isSelected=mname===currentM&&pickerYear===currentY;
     const {budget,spent}=pickerData[mname]||{budget:0,spent:0};
+    const seasonColors=monthPickerSeasonColors(mname);
     let svgInner='';
     if(budget>0){
       const ratio=Math.min(spent/budget,1);
       const over=spent>budget;
-      const fill=over?themeVar('--rose'):themeVar('--mocha');
-      const track=`rgba(${themeVar('--mocha-rgb')},0.18)`;
+      const fill=seasonColors.fill;
+      const track=seasonColors.track;
       const dash=ratio*circ;
       const pct=over?'over':Math.round((1-spent/budget)*100)+'%';
       svgInner=`<circle cx="22" cy="22" r="${r}" fill="none" stroke="${track}" stroke-width="4.5"/>
@@ -1825,8 +1848,8 @@ function renderMonthPicker(){
           stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 22 22)"/>
         <text x="22" y="26" text-anchor="middle" font-family="Fraunces,serif" font-size="7.5" fill="var(--chocolate)">${pct}</text>`;
     }else{
-      const track=`rgba(${themeVar('--mocha-rgb')},0.18)`;
-      const emptyTone=`rgba(${themeVar('--mocha-rgb')},0.5)`;
+      const track=seasonColors.track;
+      const emptyTone=seasonColors.empty;
       svgInner=`<circle cx="22" cy="22" r="${r}" fill="none" stroke="${track}" stroke-width="4.5"/>
         <text x="22" y="26" text-anchor="middle" font-family="Fraunces,serif" font-size="9" fill="${emptyTone}">—</text>`;
     }
