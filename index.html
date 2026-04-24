@@ -186,6 +186,8 @@ body::after{
   opacity:.42;
   border:none;
   background-repeat:no-repeat;
+  transform-origin:center;
+  will-change:transform,opacity;
 }
 
 .page-header{
@@ -204,6 +206,8 @@ body::after{
   z-index:-1;
   border:none;
   background-repeat:no-repeat;
+  transform-origin:center;
+  will-change:transform,opacity;
 }
 :root[data-palette="winter"] body::before{
   width:280px;height:340px;left:-108px;top:152px;
@@ -219,6 +223,7 @@ body::after{
     radial-gradient(circle at 244px 284px, rgba(255,255,255,.92) 0 4px, transparent 5px),
     radial-gradient(circle at 54px 270px, rgba(var(--light-sage-rgb),.8) 0 6px, transparent 7px);
   filter:drop-shadow(0 0 14px rgba(255,255,255,.24));
+  animation:winterSnowField 17s ease-in-out infinite alternate;
 }
 :root[data-palette="winter"] body::after{
   width:34px;height:34px;right:76px;top:54px;
@@ -229,6 +234,7 @@ body::after{
     linear-gradient(45deg, transparent 46%, rgba(var(--blush-rgb),.9) 46% 54%, transparent 54%) center/100% 100% no-repeat,
     linear-gradient(-45deg, transparent 46%, rgba(var(--blush-rgb),.9) 46% 54%, transparent 54%) center/100% 100% no-repeat;
   filter:drop-shadow(0 0 14px rgba(255,255,255,.28));
+  animation:winterSnowflake 14s linear infinite;
 }
 :root[data-palette="winter"] .page-header::before{
   width:168px;height:122px;left:20px;top:52px;
@@ -240,6 +246,7 @@ body::after{
     radial-gradient(circle at 146px 22px, rgba(var(--light-sage-rgb),.92) 0 3px, transparent 4px),
     radial-gradient(circle at 92px 92px, rgba(255,255,255,.92) 0 2px, transparent 3px);
   filter:blur(.2px) drop-shadow(0 0 8px rgba(255,255,255,.18));
+  animation:winterTwinkle 8.5s ease-in-out infinite;
 }
 :root[data-palette="winter"] .page-header::after{
   width:22px;height:22px;right:110px;top:76px;
@@ -250,6 +257,7 @@ body::after{
     linear-gradient(45deg, transparent 46%, rgba(var(--blush-rgb),.9) 46% 54%, transparent 54%) center/100% 100% no-repeat,
     linear-gradient(-45deg, transparent 46%, rgba(var(--blush-rgb),.9) 46% 54%, transparent 54%) center/100% 100% no-repeat;
   filter:drop-shadow(0 0 10px rgba(255,255,255,.22));
+  animation:winterSnowflake 12s linear infinite reverse;
 }
 
 :root[data-palette="summer"] body::before{
@@ -262,6 +270,7 @@ body::after{
     linear-gradient(rgba(var(--sand-rgb),.76),rgba(var(--sand-rgb),.76)) center/72% 2px no-repeat,
     linear-gradient(rgba(var(--sand-rgb),.76),rgba(var(--sand-rgb),.76)) center/2px 72% no-repeat;
   filter:drop-shadow(0 0 12px rgba(var(--sand-rgb),.3));
+  animation:summerStarTwinkle 6.4s ease-in-out infinite;
 }
 :root[data-palette="summer"] body::after{
   width:24px;height:24px;right:78px;top:48px;
@@ -271,6 +280,7 @@ body::after{
     linear-gradient(rgba(var(--sand-rgb),.95),rgba(var(--sand-rgb),.95)) center/2px 100% no-repeat,
     linear-gradient(rgba(var(--sand-rgb),.95),rgba(var(--sand-rgb),.95)) center/100% 2px no-repeat;
   filter:drop-shadow(0 0 10px rgba(var(--sand-rgb),.24));
+  animation:summerStarFloat 7.4s ease-in-out infinite;
 }
 :root[data-palette="summer"] .page-header::before{
   width:150px;height:116px;left:18px;top:52px;
@@ -280,6 +290,7 @@ body::after{
     radial-gradient(circle at 96px 28px, rgba(var(--blush-rgb),.44) 0 7px, transparent 8px),
     radial-gradient(circle at 126px 80px, rgba(var(--sand-rgb),.4) 0 5px, transparent 6px);
   filter:blur(6px);
+  animation:summerGlowDrift 12s ease-in-out infinite alternate;
 }
 :root[data-palette="summer"] .page-header::after{
   width:18px;height:18px;right:116px;top:78px;
@@ -289,6 +300,7 @@ body::after{
     linear-gradient(rgba(var(--sand-rgb),.98),rgba(var(--sand-rgb),.98)) center/2px 100% no-repeat,
     linear-gradient(rgba(var(--sand-rgb),.98),rgba(var(--sand-rgb),.98)) center/100% 2px no-repeat;
   filter:drop-shadow(0 0 10px rgba(var(--sand-rgb),.24));
+  animation:summerStarTwinkle 5.6s ease-in-out infinite reverse;
 }
 
 :root[data-palette="autumn"] body::before{
@@ -302,6 +314,7 @@ body::after{
     164px 48px 0 -2px rgba(var(--meadow-rgb),.72);
   transform:rotate(-16deg);
   filter:drop-shadow(0 10px 14px rgba(var(--moss-rgb),.12));
+  animation:autumnLeafDrift 15s ease-in-out infinite alternate;
 }
 :root[data-palette="autumn"] body::after{
   width:18px;height:12px;right:76px;top:56px;
@@ -313,6 +326,7 @@ body::after{
     20px 74px 0 -1px rgba(var(--blush-rgb),.74);
   transform:rotate(22deg);
   filter:drop-shadow(0 8px 12px rgba(var(--moss-rgb),.1));
+  animation:autumnLeafDriftAlt 17s ease-in-out infinite alternate;
 }
 :root[data-palette="autumn"] .page-header::before{
   width:126px;height:110px;left:18px;top:52px;
@@ -321,6 +335,7 @@ body::after{
     radial-gradient(circle at 38px 58px, rgba(var(--sand-rgb),.38) 0 28px, transparent 29px),
     radial-gradient(circle at 92px 34px, rgba(var(--blush-rgb),.28) 0 20px, transparent 21px);
   filter:blur(8px);
+  animation:autumnGlowShift 13s ease-in-out infinite alternate;
 }
 :root[data-palette="autumn"] .page-header::after{
   width:16px;height:10px;right:118px;top:78px;
@@ -329,6 +344,62 @@ body::after{
   background:linear-gradient(135deg, rgba(var(--sand-rgb),.96) 0%, rgba(var(--dusty-rose-rgb),.84) 100%);
   transform:rotate(-12deg);
   filter:drop-shadow(0 6px 8px rgba(var(--moss-rgb),.1));
+  animation:autumnLeafHeader 12s ease-in-out infinite alternate;
+}
+@keyframes winterSnowField{
+  0%{transform:translate3d(0,0,0)}
+  50%{transform:translate3d(10px,12px,0)}
+  100%{transform:translate3d(-4px,24px,0)}
+}
+@keyframes winterSnowflake{
+  0%{transform:translate3d(0,0,0) rotate(0deg);opacity:.68}
+  50%{transform:translate3d(-6px,10px,0) rotate(24deg);opacity:.84}
+  100%{transform:translate3d(8px,22px,0) rotate(44deg);opacity:.7}
+}
+@keyframes winterTwinkle{
+  0%,100%{transform:translate3d(0,0,0) scale(1);opacity:.38}
+  50%{transform:translate3d(4px,6px,0) scale(1.08);opacity:.58}
+}
+@keyframes summerStarTwinkle{
+  0%,100%{transform:translate3d(0,0,0) scale(1);opacity:.62}
+  50%{transform:translate3d(2px,-5px,0) scale(1.14);opacity:.88}
+}
+@keyframes summerStarFloat{
+  0%,100%{transform:translate3d(0,0,0) rotate(0deg)}
+  50%{transform:translate3d(-4px,-10px,0) rotate(12deg)}
+}
+@keyframes summerGlowDrift{
+  0%{transform:translate3d(0,0,0);opacity:.28}
+  50%{transform:translate3d(8px,-8px,0);opacity:.38}
+  100%{transform:translate3d(-4px,4px,0);opacity:.3}
+}
+@keyframes autumnLeafDrift{
+  0%{transform:translate3d(0,0,0) rotate(-16deg)}
+  50%{transform:translate3d(8px,8px,0) rotate(-2deg)}
+  100%{transform:translate3d(18px,20px,0) rotate(16deg)}
+}
+@keyframes autumnLeafDriftAlt{
+  0%{transform:translate3d(0,0,0) rotate(22deg)}
+  50%{transform:translate3d(-8px,10px,0) rotate(8deg)}
+  100%{transform:translate3d(12px,18px,0) rotate(30deg)}
+}
+@keyframes autumnGlowShift{
+  0%{transform:translate3d(0,0,0);opacity:.2}
+  50%{transform:translate3d(8px,-6px,0);opacity:.28}
+  100%{transform:translate3d(-4px,4px,0);opacity:.22}
+}
+@keyframes autumnLeafHeader{
+  0%{transform:translate3d(0,0,0) rotate(-12deg)}
+  50%{transform:translate3d(6px,6px,0) rotate(2deg)}
+  100%{transform:translate3d(-2px,12px,0) rotate(-18deg)}
+}
+@media (prefers-reduced-motion: reduce){
+  body::before,
+  body::after,
+  .page-header::before,
+  .page-header::after{
+    animation:none !important;
+  }
 }
 .hero-art{
   position:relative;
