@@ -1899,7 +1899,7 @@ function updateCharts(){
     donutChart.data.datasets[0].backgroundColor=[colors.sand,colors.rose,colors.babyPink,left<0?colors.roseDeep:colors.sageDeep];
     donutChart.update();
   }
-  else donutChart=new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['Bills','Spending','Subs',left<0?'Over':'Left'],datasets:[{data:dV,backgroundColor:[colors.sand,colors.rose,colors.babyPink,left<0?colors.roseDeep:colors.sageDeep],borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:false}}}});
+  else donutChart=new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['Bills','Spending','Subs',left<0?'Over':'Left'],datasets:[{data:dV,backgroundColor:[colors.sand,colors.rose,colors.babyPink,left<0?colors.roseDeep:colors.sageDeep],borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ` ${ctx.label}: ${formatMoney(ctx.parsed)}`;},afterBody:function(items){if(!items[0]||items[0].dataIndex!==1)return[];return(data.expenses||[]).map(g=>({name:g.category||'Other',total:expenseCategoryTotal(g)})).filter(c=>c.total>0).sort((a,b)=>b.total-a.total).map(c=>`  ${c.name}  ${formatMoney(c.total)}`);}}}}}}});
 }
 
 // ── COLLAPSIBLE ────────────────────────────────────────────
