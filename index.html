@@ -65,46 +65,114 @@
   --radius:20px;
   --radius-lg:34px;
 }
-:root[data-palette="classic"]{
-  --sand:#E6D2B9;
-  --sand-rgb:230,210,185;
-  --mocha:#B08F7A;
-  --mocha-rgb:176,143,122;
-  --chocolate:#795138;
-  --chocolate-rgb:121,81,56;
-  --espresso:#5B3B13;
-  --baby-pink:#FFDBDD;
-  --baby-pink-rgb:255,219,221;
-  --blush:#FFBFC2;
-  --blush-rgb:255,191,194;
-  --dusty-rose:#CB8D95;
-  --dusty-rose-rgb:203,141,149;
-  --mauve:#A7626B;
-  --mauve-rgb:167,98,107;
-  --light-sage:#E5E6B5;
-  --light-sage-rgb:229,230,181;
-  --meadow:#CAD07D;
-  --meadow-rgb:202,208,125;
-  --olive:#969752;
-  --moss:#706C3E;
-  --moss-rgb:112,108,62;
-  --bg:#FBF8F1;
-  --bg-rgb:251,248,241;
-  --paper:#FFFDF8;
-  --paper-rgb:255,253,248;
-  --paper-soft:#FAF4EC;
-  --paper-soft-rgb:250,244,236;
-  --paper-blush:#F8EFEA;
-  --paper-blush-rgb:248,239,234;
-  --blush-soft:#F3E1D7;
-  --blush-soft-rgb:243,225,215;
+:root[data-palette="winter"]{
+  --sand:#E8ECEF;
+  --sand-rgb:232,236,239;
+  --mocha:#B6C6D4;
+  --mocha-rgb:182,198,212;
+  --chocolate:#23354D;
+  --chocolate-rgb:35,53,77;
+  --espresso:#02122F;
+  --baby-pink:#F0ECDD;
+  --baby-pink-rgb:240,236,221;
+  --blush:#C4D8E5;
+  --blush-rgb:196,216,229;
+  --dusty-rose:#8EB1D1;
+  --dusty-rose-rgb:142,177,209;
+  --mauve:#75889C;
+  --mauve-rgb:117,136,156;
+  --light-sage:#D5DBE2;
+  --light-sage-rgb:213,219,226;
+  --meadow:#A7C7E7;
+  --meadow-rgb:167,199,231;
+  --olive:#778CA4;
+  --moss:#313C45;
+  --moss-rgb:49,60,69;
+  --bg:#EEF3F8;
+  --bg-rgb:238,243,248;
+  --paper:#F7FAFC;
+  --paper-rgb:247,250,252;
+  --paper-soft:#EAF2F8;
+  --paper-soft-rgb:234,242,248;
+  --paper-blush:#EDF4FA;
+  --paper-blush-rgb:237,244,250;
+  --blush-soft:#DDE8F3;
+  --blush-soft-rgb:221,232,243;
+}
+:root[data-palette="summer"]{
+  --sand:#FFF1AB;
+  --sand-rgb:255,241,171;
+  --mocha:#C49A6C;
+  --mocha-rgb:196,154,108;
+  --chocolate:#7A512B;
+  --chocolate-rgb:122,81,43;
+  --espresso:#5E3B1A;
+  --baby-pink:#FCFCF5;
+  --baby-pink-rgb:252,252,245;
+  --blush:#D2E8F5;
+  --blush-rgb:210,232,245;
+  --dusty-rose:#76B9E2;
+  --dusty-rose-rgb:118,185,226;
+  --mauve:#78A2D2;
+  --mauve-rgb:120,162,210;
+  --light-sage:#FEFFAF;
+  --light-sage-rgb:254,255,175;
+  --meadow:#FFF4BB;
+  --meadow-rgb:255,244,187;
+  --olive:#A8CEF0;
+  --moss:#8D683F;
+  --moss-rgb:141,104,63;
+  --bg:#FFF9D8;
+  --bg-rgb:255,249,216;
+  --paper:#FCFCF5;
+  --paper-rgb:252,252,245;
+  --paper-soft:#FFF8D0;
+  --paper-soft-rgb:255,248,208;
+  --paper-blush:#EAF5FB;
+  --paper-blush-rgb:234,245,251;
+  --blush-soft:#E3F1F9;
+  --blush-soft-rgb:227,241,249;
+}
+:root[data-palette="autumn"]{
+  --sand:#E5D7C4;
+  --sand-rgb:229,215,196;
+  --mocha:#CFBB99;
+  --mocha-rgb:207,187,153;
+  --chocolate:#4C3D19;
+  --chocolate-rgb:76,61,25;
+  --espresso:#423926;
+  --baby-pink:#F2EADF;
+  --baby-pink-rgb:242,234,223;
+  --blush:#B7C492;
+  --blush-rgb:183,196,146;
+  --dusty-rose:#799851;
+  --dusty-rose-rgb:121,152,81;
+  --mauve:#354024;
+  --mauve-rgb:53,64,36;
+  --light-sage:#C7CFB0;
+  --light-sage-rgb:199,207,176;
+  --meadow:#889063;
+  --meadow-rgb:136,144,99;
+  --olive:#9FB878;
+  --moss:#354024;
+  --moss-rgb:53,64,36;
+  --bg:#EEE7D9;
+  --bg-rgb:238,231,217;
+  --paper:#F6F0E6;
+  --paper-rgb:246,240,230;
+  --paper-soft:#EADFCC;
+  --paper-soft-rgb:234,223,204;
+  --paper-blush:#EFE6D9;
+  --paper-blush-rgb:239,230,217;
+  --blush-soft:#E1D5C5;
+  --blush-soft-rgb:225,213,197;
 }
 html{
   font-family:'Manrope',sans-serif;
   background:
     radial-gradient(circle at left 18%, rgba(var(--blush-rgb),0.42) 0 10%, transparent 10% 100%),
     radial-gradient(circle at right 12%, rgba(var(--sand-rgb),0.24) 0 8%, transparent 8% 100%),
-    linear-gradient(180deg,var(--paper) 0%,#F3EFE0 100%);
+    linear-gradient(180deg,var(--paper) 0%,rgba(var(--bg-rgb),0.96) 100%);
   color:var(--ink);
   font-size:14px;
 }
@@ -212,20 +280,7 @@ body::after{
   gap:.45rem;
   padding:.08rem .68rem;
 }
-.palette-switch{
-  display:flex;
-  align-items:center;
-  gap:.3rem;
-  min-height:44px;
-  padding:.08rem .36rem .08rem .62rem;
-  background:rgba(var(--paper-rgb),0.88);
-  border:1px solid rgba(var(--mocha-rgb),0.26);
-  border-radius:999px;
-  box-shadow:var(--shadow-soft);
-  backdrop-filter:blur(8px);
-}
 .month-selector label,
-.palette-label,
 .sync-pill-label,
 #sync-status{
   font-size:.62rem;
@@ -233,22 +288,6 @@ body::after{
   letter-spacing:.08em;
   text-transform:uppercase;
   color:var(--muted);
-}
-.palette-option{
-  border:1px solid transparent;
-  background:transparent;
-  color:var(--sage-deep);
-  font:800 .66rem 'Manrope',sans-serif;
-  border-radius:999px;
-  padding:.35rem .62rem;
-  cursor:pointer;
-  transition:background .15s ease,color .15s ease,border-color .15s ease;
-}
-.palette-option:hover{background:rgba(var(--mocha-rgb),0.12)}
-.palette-option.active{
-  background:var(--rose);
-  border-color:var(--rose);
-  color:var(--paper);
 }
 .month-selector select{
   font-family:'Manrope',sans-serif;
@@ -997,14 +1036,6 @@ input[type=checkbox]{
     gap:.12rem .28rem;
     padding:.16rem .42rem;
   }
-  .palette-switch{
-    grid-column:1 / -1;
-    justify-content:center;
-    width:100%;
-    min-width:0;
-    border-radius:24px;
-    padding:.16rem .42rem;
-  }
   .sync-pill{
     grid-area:goal;
     width:100%;
@@ -1128,11 +1159,6 @@ input[type=checkbox]{
         <span id="sync-status" data-tone="neutral">Local only.</span>
         <span id="sync-timestamp">No saves yet.</span>
       </div>
-    </div>
-    <div class="palette-switch" aria-label="Palette switcher">
-      <span class="palette-label">Palette</span>
-      <button type="button" class="palette-option" data-palette="classic" onclick="setPalette('classic')">Original</button>
-      <button type="button" class="palette-option" data-palette="engie" onclick="setPalette('engie')">New</button>
     </div>
   </div>
 </header>
@@ -1308,42 +1334,25 @@ const db = firebase.firestore();
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const BUDGET_SECTIONS=['income','bills','expenses','subs'];
 const DEFAULT_EXPENSE_CATEGORIES=['entertainment','dining out','beauty','transportation','tech','stationery','grocery','clothes','pet','home','education'];
-const PALETTE_STORAGE_KEY='budget-tracker-palette';
-const DEFAULT_PALETTE='engie';
-const PALETTE_THEME_COLORS={classic:'#FBF8F1',engie:'#F5F1E0'};
+const PALETTE_THEME_COLORS={winter:'#F7FAFC',summer:'#FCFCF5',autumn:'#F6F0E6'};
 let currentKey='';
 let data={};
 let currentUser=null;
 let saveTimer=null;
 
-function normalizePalette(name){
-  return Object.prototype.hasOwnProperty.call(PALETTE_THEME_COLORS,name)?name:DEFAULT_PALETTE;
+function seasonalPaletteForMonth(monthName){
+  const idx=MONTHS.indexOf(monthName);
+  if(idx>=0&&idx<=3)return 'winter';
+  if(idx>=4&&idx<=7)return 'summer';
+  return 'autumn';
 }
-function updatePaletteControls(){
-  const active=document.documentElement.dataset.palette||DEFAULT_PALETTE;
-  document.querySelectorAll('.palette-option').forEach(btn=>{
-    const pressed=btn.dataset.palette===active;
-    btn.classList.toggle('active',pressed);
-    btn.setAttribute('aria-pressed',pressed?'true':'false');
-  });
-}
-function applyPalette(name,{persist=true}={}){
-  const palette=normalizePalette(name);
+function applySeasonalPalette(){
+  const monthSelect=document.getElementById('month-select');
+  const monthName=monthSelect&&monthSelect.value ? monthSelect.value : MONTHS[new Date().getMonth()];
+  const palette=seasonalPaletteForMonth(monthName);
   document.documentElement.dataset.palette=palette;
   const themeMeta=document.querySelector('meta[name="theme-color"]');
   if(themeMeta)themeMeta.setAttribute('content',PALETTE_THEME_COLORS[palette]);
-  if(persist){
-    try{localStorage.setItem(PALETTE_STORAGE_KEY,palette)}catch{}
-  }
-  updatePaletteControls();
-}
-function setPalette(name){
-  applyPalette(name);
-  if(Array.isArray(data.income)&&Array.isArray(data.bills)&&Array.isArray(data.expenses)&&Array.isArray(data.subs)){
-    renderAll();
-    const popup=document.getElementById('month-picker-popup');
-    if(popup&&popup.classList.contains('open'))renderMonthPicker();
-  }
 }
 
 function getKey(){
@@ -2150,6 +2159,7 @@ function delRow(sec,i){
 async function switchMonth(){
   refreshMonthLabel();
   await persistBudget({quiet:true});
+  applySeasonalPalette();
   await loadData();renderAll();
 }
 
@@ -2163,14 +2173,10 @@ auth.onAuthStateChanged(async (user)=>{
 });
 
 (function init(){
-  let storedPalette=DEFAULT_PALETTE;
-  try{
-    storedPalette=localStorage.getItem(PALETTE_STORAGE_KEY)||DEFAULT_PALETTE;
-  }catch{}
-  applyPalette(storedPalette,{persist:false});
   const now=new Date();
   document.getElementById('month-select').value=MONTHS[now.getMonth()];
   document.getElementById('year-select').value=now.getFullYear();
+  applySeasonalPalette();
   loadData().then(renderAll);
 })();
 </script>
