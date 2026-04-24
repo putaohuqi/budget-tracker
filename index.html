@@ -1904,15 +1904,7 @@ function updateCharts(){
   else{
     const donutTooltip={
       callbacks:{
-        label:function(ctx){return ' '+ctx.label+': '+formatMoney(ctx.parsed);},
-        afterBody:function(items){
-          if(!items[0]||items[0].dataIndex!==1)return[];
-          return (data.expenses||[])
-            .map(function(g){return{name:g.category||'Other',total:expenseCategoryTotal(g)};})
-            .filter(function(c){return c.total>0;})
-            .sort(function(a,b){return b.total-a.total;})
-            .map(function(c){return '  '+c.name+'  '+formatMoney(c.total);});
-        }
+        label:function(ctx){return ' '+ctx.label+': '+formatMoney(ctx.parsed);}
       }
     };
     donutChart=new Chart(document.getElementById('donutChart'),{
