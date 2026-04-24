@@ -100,72 +100,72 @@
   --blush-soft-rgb:221,232,243;
 }
 :root[data-palette="summer"]{
-  --sand:#F7E8B9;
-  --sand-rgb:247,232,185;
+  --sand:#FFF1B9;
+  --sand-rgb:255,241,185;
   --mocha:#C49A6C;
   --mocha-rgb:196,154,108;
   --chocolate:#7A512B;
   --chocolate-rgb:122,81,43;
   --espresso:#5E3B1A;
-  --baby-pink:#FCFCF5;
-  --baby-pink-rgb:252,252,245;
+  --baby-pink:#FFFDF4;
+  --baby-pink-rgb:255,253,244;
   --blush:#D2E8F5;
   --blush-rgb:210,232,245;
   --dusty-rose:#76B9E2;
   --dusty-rose-rgb:118,185,226;
   --mauve:#78A2D2;
   --mauve-rgb:120,162,210;
-  --light-sage:#F8F1CF;
-  --light-sage-rgb:248,241,207;
-  --meadow:#F3E7BE;
-  --meadow-rgb:243,231,190;
+  --light-sage:#FFF4C5;
+  --light-sage-rgb:255,244,197;
+  --meadow:#FFF7D1;
+  --meadow-rgb:255,247,209;
   --olive:#A8CEF0;
   --moss:#8D683F;
   --moss-rgb:141,104,63;
-  --bg:#FBF7E8;
-  --bg-rgb:251,247,232;
-  --paper:#FCFCF5;
-  --paper-rgb:252,252,245;
-  --paper-soft:#FAF4E1;
-  --paper-soft-rgb:250,244,225;
+  --bg:#FFFAE3;
+  --bg-rgb:255,250,227;
+  --paper:#FFFDF4;
+  --paper-rgb:255,253,244;
+  --paper-soft:#FFFAE3;
+  --paper-soft-rgb:255,250,227;
   --paper-blush:#EAF5FB;
   --paper-blush-rgb:234,245,251;
   --blush-soft:#E3F1F9;
   --blush-soft-rgb:227,241,249;
 }
 :root[data-palette="autumn"]{
-  --sand:#E5D7C4;
-  --sand-rgb:229,215,196;
-  --mocha:#CFBB99;
-  --mocha-rgb:207,187,153;
-  --chocolate:#4C3D19;
-  --chocolate-rgb:76,61,25;
-  --espresso:#423926;
-  --baby-pink:#F2EADF;
-  --baby-pink-rgb:242,234,223;
-  --blush:#B7C492;
-  --blush-rgb:183,196,146;
-  --dusty-rose:#799851;
-  --dusty-rose-rgb:121,152,81;
-  --mauve:#354024;
-  --mauve-rgb:53,64,36;
-  --light-sage:#C7CFB0;
-  --light-sage-rgb:199,207,176;
-  --meadow:#889063;
-  --meadow-rgb:136,144,99;
-  --olive:#9FB878;
-  --moss:#354024;
-  --moss-rgb:53,64,36;
-  --bg:#EEE7D9;
-  --bg-rgb:238,231,217;
-  --paper:#F6F0E6;
-  --paper-rgb:246,240,230;
-  --paper-soft:#EADFCC;
-  --paper-soft-rgb:234,223,204;
-  --paper-blush:#EFE6D9;
-  --paper-blush-rgb:239,230,217;
-  --blush-soft:#E1D5C5;
-  --blush-soft-rgb:225,213,197;
+  --sand:#C3C0AA;
+  --sand-rgb:195,192,170;
+  --mocha:#819B85;
+  --mocha-rgb:129,155,133;
+  --chocolate:#3B584B;
+  --chocolate-rgb:59,88,75;
+  --espresso:#2B4339;
+  --baby-pink:#EFEADA;
+  --baby-pink-rgb:239,234,218;
+  --blush:#D7D2BF;
+  --blush-rgb:215,210,191;
+  --dusty-rose:#52796C;
+  --dusty-rose-rgb:82,121,108;
+  --mauve:#3B584B;
+  --mauve-rgb:59,88,75;
+  --light-sage:#D8D8C8;
+  --light-sage-rgb:216,216,200;
+  --meadow:#819B85;
+  --meadow-rgb:129,155,133;
+  --olive:#A3B2A0;
+  --moss:#3B584B;
+  --moss-rgb:59,88,75;
+  --bg:#F3F0E6;
+  --bg-rgb:243,240,230;
+  --paper:#EFEADA;
+  --paper-rgb:239,234,218;
+  --paper-soft:#E7E1D2;
+  --paper-soft-rgb:231,225,210;
+  --paper-blush:#ECE7DA;
+  --paper-blush-rgb:236,231,218;
+  --blush-soft:#DCD8C8;
+  --blush-soft-rgb:220,216,200;
 }
 html{
   font-family:'Manrope',sans-serif;
@@ -1334,7 +1334,7 @@ const db = firebase.firestore();
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const BUDGET_SECTIONS=['income','bills','expenses','subs'];
 const DEFAULT_EXPENSE_CATEGORIES=['entertainment','dining out','beauty','transportation','tech','stationery','grocery','clothes','pet','home','education'];
-const PALETTE_THEME_COLORS={winter:'#F7FAFC',summer:'#FCFCF5',autumn:'#F6F0E6'};
+const PALETTE_THEME_COLORS={winter:'#F7FAFC',summer:'#FFFDF4',autumn:'#EFEADA'};
 let currentKey='';
 let data={};
 let currentUser=null;
@@ -1357,15 +1357,15 @@ function monthPickerSeasonColors(monthName){
   }
   if(palette==='summer'){
     return {
-      fill:'#F7E8B9',
+      fill:'#FFF1B9',
       track:'rgba(196,154,108,0.2)',
       empty:'rgba(196,154,108,0.42)'
     };
   }
   return {
-    fill:'#799851',
-    track:'rgba(159,184,120,0.26)',
-    empty:'rgba(76,61,25,0.44)'
+    fill:'#819B85',
+    track:'rgba(195,192,170,0.28)',
+    empty:'rgba(59,88,75,0.44)'
   };
 }
 function applySeasonalPalette(){
@@ -2047,10 +2047,19 @@ function updateCharts(){
   else barChart=new Chart(document.getElementById('barChart'),{type:'bar',data:{labels:barLabels,datasets:[{label:'Amount',data:barValues,backgroundColor:barColors,borderRadius:8,maxBarThickness:64}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10,weight:'700',family:'Manrope'},color:colors.ink},grid:{display:false}},y:{ticks:{font:{size:9,family:'Manrope'},color:colors.muted,callback:v=>formatMoney(v,0)},grid:{color:colors.line}}}}});
   const pL=data.bills.filter(r=>r.name&&parseFloat(r.amount)>0).map(r=>r.name);
   const pV=data.bills.filter(r=>r.name&&parseFloat(r.amount)>0).map(r=>parseFloat(r.amount)||0);
+  const pieLabels=pL.length?pL:['No data'];
+  const pieValues=pV.length?pV:[1];
+  const pieColors=pV.length?[colors.sand,colors.sage,colors.babyPink,colors.rose,colors.blushSoft,colors.mocha,colors.sageSoft,colors.olive]:[colors.line];
   document.getElementById('pie-center').textContent=formatMoney(billsSpent,0);
   document.getElementById('pie-label').textContent='total bills';
-  if(pieChart){pieChart.data.labels=pL;pieChart.data.datasets[0].data=pV;pieChart.update()}
-  else pieChart=new Chart(document.getElementById('pieChart'),{type:'pie',data:{labels:pL.length?pL:['No data'],datasets:[{data:pV.length?pV:[1],backgroundColor:pV.length?[colors.sand,colors.sage,colors.babyPink,colors.rose,colors.blushSoft,colors.mocha,colors.sageSoft,colors.olive]:[colors.line],borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+  if(pieChart){
+    pieChart.data.labels=pieLabels;
+    pieChart.data.datasets[0].data=pieValues;
+    pieChart.data.datasets[0].backgroundColor=pieColors;
+    pieChart.data.datasets[0].borderColor=colors.paper;
+    pieChart.update();
+  }
+  else pieChart=new Chart(document.getElementById('pieChart'),{type:'pie',data:{labels:pieLabels,datasets:[{data:pieValues,backgroundColor:pieColors,borderWidth:1,borderColor:colors.paper}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
   const dV=[billsSpent,expensesSpent,subsSpent,Math.abs(left)];
   document.getElementById('donut-center').textContent=formatMoney(Math.abs(left),0);
   document.getElementById('donut-label').textContent=left<0?'over budget':'left to spend';
