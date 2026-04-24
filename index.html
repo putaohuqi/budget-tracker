@@ -511,6 +511,73 @@ body::after{
   text-transform:uppercase;
 }
 
+/* ── YEARLY CALENDAR ── */
+.yr-card{
+  background:rgba(255,255,255,0.8);
+  border-radius:18px;
+  border:1px solid rgba(176,143,122,0.22);
+  overflow:hidden;
+  box-shadow:0 10px 24px rgba(121,81,56,0.06);
+  margin:.78rem 0 0;
+}
+.yr-head{
+  cursor:pointer;
+  user-select:none;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.5rem .8rem;
+  background:linear-gradient(180deg,#e5e6b5 0%,#cad07d 100%);
+  color:var(--sage-deep);
+}
+.yr-head-title{
+  font-family:'Fraunces',serif;
+  font-size:1.02rem;
+  flex:1;
+  text-align:center;
+}
+.yr-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:.7rem;
+  padding:.85rem;
+}
+.yr-month-name{
+  font-family:'Fraunces',serif;
+  font-size:.78rem;
+  color:var(--sage-deep);
+  margin-bottom:.32rem;
+}
+.yr-cal{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:2px;
+}
+.yr-dh{
+  font-size:.5rem;
+  font-weight:800;
+  color:var(--muted);
+  text-align:center;
+  padding-bottom:.18rem;
+  letter-spacing:.03em;
+}
+.yr-dot-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1.5px;
+}
+.yr-dot{
+  width:13px;
+  height:13px;
+  border-radius:50%;
+}
+.yr-dot-other{background:transparent!important}
+.yr-dot-today{
+  outline:2px solid var(--mocha);
+  outline-offset:1px;
+}
+
 /* ── MAIN GRID ── */
 .main-grid{
   display:grid;
@@ -1017,6 +1084,19 @@ input[type=checkbox]{
       </div>
     </div>
   </section>
+
+  <!-- YEARLY CALENDAR -->
+  <div class="yr-card">
+    <div class="yr-head" onclick="toggleYearlyCalendar()">
+      <span style="min-width:14px"></span>
+      <span class="yr-head-title">Yearly Overview</span>
+      <span style="min-width:76px"></span>
+      <span class="section-chevron" id="yr-chev">▾</span>
+    </div>
+    <div id="yr-body-wrap" class="section-body">
+      <div class="yr-grid" id="yr-body"></div>
+    </div>
+  </div>
 
   <!-- MAIN DATA GRID -->
   <section class="main-grid">
@@ -1553,8 +1633,59 @@ function updateAuthUI(user){
 }
 
 // ── RENDERING ─────────────────────────────────────────────
+function renderYearlyCalendar(){
+  const body=document.getElementById('yr-body');
+  if(!body)return;
+  const MNAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const MKEYS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+  const y=parseInt(document.getElementById('year-select').value);
+  const currentM=document.getElementById('month-select').value;
+  const today=new Date();
+  let html='';
+  MKEYS.forEach((mk,mi)=>{
+    const mdata=mk===currentM?data:(parseLocalBudget(`${mk}_${y}`)||{});
+    const dailySpend={};
+    function addSpend(ds,amt){if(!ds||!parseFloat(amt))return;dailySpend[ds]=(dailySpend[ds]||0)+parseFloat(amt);}
+    (mdata.bills||[]).forEach(r=>addSpend(r.date,r.amount));
+    (mdata.subs||[]).forEach(r=>addSpend(r.date,r.amount));
+    (mdata.expenses||[]).forEach(g=>(g.items||[]).forEach(item=>addSpend(item.date,item.amount)));
+    const monthlyBudget=(mdata.income||[]).reduce((s,r)=>s+(parseFloat(r.budget)||0),0);
+    const daysInMonth=new Date(y,mi+1,0).getDate();
+    const dailyBudget=monthlyBudget>0?monthlyBudget/daysInMonth:0;
+    const firstDow=new Date(y,mi,1).getDay();
+    let m=`<div class="yr-month"><div class="yr-month-name">${MNAMES[mi]}</div><div class="yr-cal">`;
+    ['S','M','T','W','T','F','S'].forEach(d=>{m+=`<div class="yr-dh">${d}</div>`});
+    for(let i=0;i<firstDow;i++)m+=`<div class="yr-dot-wrap"><div class="yr-dot yr-dot-other"></div></div>`;
+    for(let d=1;d<=daysInMonth;d++){
+      const ds=`${y}-${String(mi+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const spend=dailySpend[ds]||0;
+      const isToday=today.getFullYear()===y&&today.getMonth()===mi&&today.getDate()===d;
+      let style;
+      if(spend>0){
+        const ratio=dailyBudget>0?Math.min(spend/dailyBudget,1):0.5;
+        const deg=Math.round(ratio*360);
+        const over=dailyBudget>0&&spend>dailyBudget;
+        const fill=over?'#f4d4d7':'#cad07d';
+        style=`background:conic-gradient(${fill} 0deg ${deg}deg,rgba(176,143,122,0.15) ${deg}deg 360deg)`;
+      }else{
+        style='background:rgba(176,143,122,0.12)';
+      }
+      m+=`<div class="yr-dot-wrap"><div class="yr-dot${isToday?' yr-dot-today':''}" style="${style}"></div></div>`;
+    }
+    m+=`</div></div>`;
+    html+=m;
+  });
+  body.innerHTML=html;
+}
+function toggleYearlyCalendar(){
+  const wrap=document.getElementById('yr-body-wrap');
+  const chev=document.getElementById('yr-chev');
+  if(!wrap)return;
+  wrap.classList.toggle('collapsed');
+  if(chev)chev.textContent=wrap.classList.contains('collapsed')?'▸':'▾';
+}
 function renderAll(){
-  renderIncome();renderBills();renderExpenses();renderSubs();
+  renderIncome();renderBills();renderExpenses();renderSubs();renderYearlyCalendar();
   const goalInput=document.getElementById('savings-goal');
   if(goalInput)goalInput.value=data.savingsGoal||'';
   refreshMonthLabel();updateStats();updateCharts();refreshSyncTimestamp();
