@@ -1613,11 +1613,42 @@ function updateAuthUI(user){
 
 // ── RENDERING ─────────────────────────────────────────────
 let pickerYear=new Date().getFullYear();
+let pickerData={};
+function computeStats(mdata){
+  const budget=(mdata.income||[]).reduce((s,r)=>s+(parseFloat(r.budget)||0),0);
+  const spent=(mdata.bills||[]).reduce((s,r)=>s+(parseFloat(r.amount)||0),0)
+    +(mdata.subs||[]).reduce((s,r)=>s+(parseFloat(r.amount)||0),0)
+    +(mdata.expenses||[]).reduce((s,g)=>s+(g.items||[]).reduce((ss,it)=>ss+(parseFloat(it.amount)||0),0),0);
+  return {budget,spent};
+}
+async function loadAndRenderPicker(){
+  const currentM=document.getElementById('month-select').value;
+  const currentY=parseInt(document.getElementById('year-select').value);
+  pickerData={};
+  await Promise.all(MONTHS.map(async(mname)=>{
+    if(mname===currentM&&pickerYear===currentY){pickerData[mname]=computeStats(data);return;}
+    let mdata={};
+    try{
+      if(currentUser){
+        const snap=await db.collection('users').doc(currentUser.uid).collection('budgets').doc(`${mname}_${pickerYear}`).get();
+        if(snap.exists)mdata=snap.data()||{};
+      }else{
+        mdata=parseLocalBudget(`${mname}_${pickerYear}`)||{};
+      }
+    }catch(e){}
+    pickerData[mname]=computeStats(mdata);
+  }));
+  renderMonthPicker();
+}
 function toggleMonthPicker(e){
   e.stopPropagation();
   const popup=document.getElementById('month-picker-popup');
   if(popup.classList.contains('open')){closeMonthPicker();}
-  else{pickerYear=parseInt(document.getElementById('year-select').value);renderMonthPicker();popup.classList.add('open');}
+  else{
+    pickerYear=parseInt(document.getElementById('year-select').value);
+    popup.classList.add('open');
+    loadAndRenderPicker();
+  }
 }
 function closeMonthPicker(){
   const p=document.getElementById('month-picker-popup');
@@ -1625,16 +1656,8 @@ function closeMonthPicker(){
 }
 function shiftPickerYear(dir){
   pickerYear+=dir;
-  renderMonthPicker();
-}
-function getMonthStats(mname,y){
-  const mdata=mname===document.getElementById('month-select').value&&y===parseInt(document.getElementById('year-select').value)
-    ?data:(parseLocalBudget(`${mname}_${y}`)||{});
-  const budget=(mdata.income||[]).reduce((s,r)=>s+(parseFloat(r.budget)||0),0);
-  const spent=(mdata.bills||[]).reduce((s,r)=>s+(parseFloat(r.amount)||0),0)
-    +(mdata.subs||[]).reduce((s,r)=>s+(parseFloat(r.amount)||0),0)
-    +(mdata.expenses||[]).reduce((s,g)=>s+(g.items||[]).reduce((ss,it)=>ss+(parseFloat(it.amount)||0),0),0);
-  return {budget,spent};
+  document.getElementById('mp-yr-label').textContent=pickerYear;
+  loadAndRenderPicker();
 }
 function renderMonthPicker(){
   const grid=document.getElementById('mp-grid');
@@ -1648,7 +1671,7 @@ function renderMonthPicker(){
   let html='';
   MONTHS.forEach((mname,mi)=>{
     const isSelected=mname===currentM&&pickerYear===currentY;
-    const {budget,spent}=getMonthStats(mname,pickerYear);
+    const {budget,spent}=pickerData[mname]||{budget:0,spent:0};
     let svgInner='';
     if(budget>0){
       const ratio=Math.min(spent/budget,1);
