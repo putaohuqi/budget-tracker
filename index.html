@@ -1214,6 +1214,7 @@ const db = firebase.firestore();
 // ── STATE ──────────────────────────────────────────────────
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const BUDGET_SECTIONS=['income','bills','expenses','subs'];
+const DEFAULT_EXPENSE_CATEGORIES=['entertainment','dining out','beauty','transportation','tech','stationery','grocery'];
 let currentKey='';
 let data={};
 let currentUser=null;
@@ -1491,10 +1492,13 @@ async function loadData(){
     data=parseLocalBudget(currentKey);
     setSyncStatus('Local only.','neutral');
   }
-  if(data.subs===undefined||data.subs===null){
+  const subsIsBlank=!Array.isArray(data.subs)||!data.subs.length||(data.subs.length===1&&!data.subs[0].name&&!data.subs[0].amount);
+  if(subsIsBlank){
     const inherited=await getInheritedSubs();
     if(inherited)data.subs=inherited;
   }
+  const expIsBlank=!Array.isArray(data.expenses)||!data.expenses.length||(data.expenses.length===1&&!data.expenses[0].category);
+  if(expIsBlank)data.expenses=DEFAULT_EXPENSE_CATEGORIES.map(cat=>({category:cat,open:false,items:[emptyExpenseItem()]}));
   fillEmpty();
   refreshSyncTimestamp();
 }
@@ -1720,9 +1724,14 @@ function formatAmountInput(el){
   const v=parseFloat(el.value);
   if(!isNaN(v)&&el.value.trim()!=='')el.value=v.toFixed(2);
 }
+function fmtAmt(v){
+  const n=parseFloat(v);
+  return v!==''&&v!=null&&!isNaN(n)?n.toFixed(2):(v||'');
+}
 function inp(val,type,placeholder){
+  const display=type==='number'?fmtAmt(val):val;
   const blur=type==='number'?' onblur="formatAmountInput(this)"':'';
-  return `<input type="${type||'text'}" value="${esc(val)}" placeholder="${esc(placeholder||'')}" oninput="onInput(this)"${blur}/>`;
+  return `<input type="${type||'text'}" value="${esc(display)}" placeholder="${esc(placeholder||'')}" oninput="onInput(this)"${blur}/>`;
 }
 function esc(v){return String(v||'').replace(/"/g,'&quot;')}
 function numCell(val,placeholder){return `<td>${inp(val,'number',placeholder)}</td>`}
@@ -1777,7 +1786,7 @@ function renderExpenses(){
         </div>
       </td>
       <td><input data-i="${i}" data-j="${j}" data-field="date" type="date" value="${esc(item.date)}" oninput="onExpenseItemInput(this)"/></td>
-      <td><input data-i="${i}" data-j="${j}" data-field="amount" type="number" value="${esc(item.amount)}" placeholder="0.00" oninput="onExpenseItemInput(this)" onblur="formatAmountInput(this)"/></td>
+      <td><input data-i="${i}" data-j="${j}" data-field="amount" type="number" value="${esc(fmtAmt(item.amount))}" placeholder="0.00" oninput="onExpenseItemInput(this)" onblur="formatAmountInput(this)"/></td>
       <td><button type="button" class="expense-delete-btn" onclick="delExpenseTransaction(${i},${j})" title="remove transaction">✕</button></td>
     </tr>`).join(''):'';
     return parent+children;
