@@ -512,71 +512,52 @@ body::after{
 }
 
 /* ── YEARLY CALENDAR ── */
-.yr-card{
-  background:rgba(255,255,255,0.8);
-  border-radius:18px;
-  border:1px solid rgba(176,143,122,0.22);
-  overflow:hidden;
-  box-shadow:0 10px 24px rgba(121,81,56,0.06);
-  margin:.78rem 0 0;
+/* ── MONTH PICKER ── */
+.month-picker-btn{
+  border:none;background:transparent;cursor:pointer;
+  font-family:'Manrope',sans-serif;font-size:.78rem;font-weight:700;
+  color:var(--sage-deep);display:flex;align-items:center;gap:.22rem;padding:0;
 }
-.yr-head{
-  cursor:pointer;
-  user-select:none;
-  display:flex;
-  align-items:center;
-  gap:.5rem;
-  padding:.5rem .8rem;
-  background:linear-gradient(180deg,#e5e6b5 0%,#cad07d 100%);
-  color:var(--sage-deep);
-}
-.yr-head-title{
-  font-family:'Fraunces',serif;
-  font-size:1.02rem;
-  flex:1;
-  text-align:center;
-}
-.yr-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:.7rem;
+.month-picker-btn .mp-arrow{font-size:.6rem;color:var(--muted)}
+.month-picker-popup{
+  position:absolute;
+  top:calc(100% + 10px);
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--paper);
+  border-radius:20px;
+  border:1px solid rgba(176,143,122,0.26);
+  box-shadow:0 20px 48px rgba(121,81,56,0.16);
   padding:.85rem;
+  z-index:200;
+  display:none;
+  width:340px;
 }
-.yr-month-name{
-  font-family:'Fraunces',serif;
-  font-size:.78rem;
-  color:var(--sage-deep);
-  margin-bottom:.32rem;
+.month-picker-popup.open{display:block}
+.mp-yr-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.7rem;
 }
-.yr-cal{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:2px;
+.mp-yr-btn{
+  border:none;background:none;cursor:pointer;
+  color:var(--sage-deep);font-size:1rem;padding:.2rem .5rem;
+  border-radius:8px;line-height:1;
 }
-.yr-dh{
-  font-size:.5rem;
-  font-weight:800;
-  color:var(--muted);
-  text-align:center;
-  padding-bottom:.18rem;
-  letter-spacing:.03em;
+.mp-yr-btn:hover{background:rgba(176,143,122,0.1)}
+.mp-yr-label{font-family:'Fraunces',serif;font-size:1rem;color:var(--sage-deep)}
+.mp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem}
+.mp-cell{
+  display:flex;flex-direction:column;align-items:center;gap:.22rem;
+  padding:.42rem .15rem;border-radius:12px;cursor:pointer;
+  border:1.5px solid transparent;transition:background .15s;
 }
-.yr-dot-wrap{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:1.5px;
+.mp-cell:hover{background:rgba(176,143,122,0.08)}
+.mp-cell.mp-selected{border-color:var(--mocha);background:rgba(176,143,122,0.1)}
+.mp-cell-name{
+  font-size:.6rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.04em;color:var(--muted);
 }
-.yr-dot{
-  width:13px;
-  height:13px;
-  border-radius:50%;
-}
-.yr-dot-other{background:transparent!important}
-.yr-dot-today{
-  outline:2px solid var(--mocha);
-  outline-offset:1px;
-}
+.mp-cell.mp-selected .mp-cell-name{color:var(--sage-deep)}
 
 /* ── MAIN GRID ── */
 .main-grid{
@@ -1021,9 +1002,9 @@ input[type=checkbox]{
   </div>
 
   <div class="header-controls">
-    <div class="month-selector">
+    <div class="month-selector" style="position:relative">
       <label>Month</label>
-      <select id="month-select" onchange="switchMonth()">
+      <select id="month-select" style="display:none" onchange="switchMonth()">
         <option value="January">January</option><option value="February">February</option>
         <option value="March">March</option><option value="April">April</option>
         <option value="May">May</option><option value="June">June</option>
@@ -1031,9 +1012,21 @@ input[type=checkbox]{
         <option value="September">September</option><option value="October">October</option>
         <option value="November">November</option><option value="December">December</option>
       </select>
-      <select id="year-select" onchange="switchMonth()">
+      <select id="year-select" style="display:none" onchange="switchMonth()">
         <option>2024</option><option>2025</option><option selected>2026</option><option>2027</option>
       </select>
+      <button type="button" class="month-picker-btn" id="month-picker-btn" onclick="toggleMonthPicker(event)">
+        <span id="mp-display">April 2026</span>
+        <span class="mp-arrow">▾</span>
+      </button>
+      <div class="month-picker-popup" id="month-picker-popup">
+        <div class="mp-yr-nav">
+          <button type="button" class="mp-yr-btn" onclick="shiftPickerYear(-1)">‹</button>
+          <span class="mp-yr-label" id="mp-yr-label">2026</span>
+          <button type="button" class="mp-yr-btn" onclick="shiftPickerYear(1)">›</button>
+        </div>
+        <div class="mp-grid" id="mp-grid"></div>
+      </div>
     </div>
 
     <div class="sync-actions">
@@ -1084,19 +1077,6 @@ input[type=checkbox]{
       </div>
     </div>
   </section>
-
-  <!-- YEARLY CALENDAR -->
-  <div class="yr-card">
-    <div class="yr-head" onclick="toggleYearlyCalendar()">
-      <span style="min-width:14px"></span>
-      <span class="yr-head-title">Yearly Overview</span>
-      <span style="min-width:76px"></span>
-      <span class="section-chevron" id="yr-chev">▾</span>
-    </div>
-    <div id="yr-body-wrap" class="section-body">
-      <div class="yr-grid" id="yr-body"></div>
-    </div>
-  </div>
 
   <!-- MAIN DATA GRID -->
   <section class="main-grid">
@@ -1339,13 +1319,12 @@ function parseLocalBudget(key){
 }
 
 async function getInheritedSubs(){
-  const months=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
   const m=document.getElementById('month-select').value;
   const y=parseInt(document.getElementById('year-select').value);
-  let mi=months.indexOf(m),yr=y;
+  let mi=MONTHS.indexOf(m),yr=y;
   for(let i=0;i<24;i++){
     mi--;if(mi<0){mi=11;yr--;}
-    const key=`${months[mi]}_${yr}`;
+    const key=`${MONTHS[mi]}_${yr}`;
     let raw=null;
     try{
       if(currentUser){
@@ -1633,59 +1612,81 @@ function updateAuthUI(user){
 }
 
 // ── RENDERING ─────────────────────────────────────────────
-function renderYearlyCalendar(){
-  const body=document.getElementById('yr-body');
-  if(!body)return;
-  const MNAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const MKEYS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
-  const y=parseInt(document.getElementById('year-select').value);
+let pickerYear=new Date().getFullYear();
+function toggleMonthPicker(e){
+  e.stopPropagation();
+  const popup=document.getElementById('month-picker-popup');
+  if(popup.classList.contains('open')){closeMonthPicker();}
+  else{pickerYear=parseInt(document.getElementById('year-select').value);renderMonthPicker();popup.classList.add('open');}
+}
+function closeMonthPicker(){
+  const p=document.getElementById('month-picker-popup');
+  if(p)p.classList.remove('open');
+}
+function shiftPickerYear(dir){
+  pickerYear+=dir;
+  renderMonthPicker();
+}
+function getMonthStats(mname,y){
+  const mdata=mname===document.getElementById('month-select').value&&y===parseInt(document.getElementById('year-select').value)
+    ?data:(parseLocalBudget(`${mname}_${y}`)||{});
+  const budget=(mdata.income||[]).reduce((s,r)=>s+(parseFloat(r.budget)||0),0);
+  const spent=(mdata.bills||[]).reduce((s,r)=>s+(parseFloat(r.amount)||0),0)
+    +(mdata.subs||[]).reduce((s,r)=>s+(parseFloat(r.amount)||0),0)
+    +(mdata.expenses||[]).reduce((s,g)=>s+(g.items||[]).reduce((ss,it)=>ss+(parseFloat(it.amount)||0),0),0);
+  return {budget,spent};
+}
+function renderMonthPicker(){
+  const grid=document.getElementById('mp-grid');
+  const yrLabel=document.getElementById('mp-yr-label');
+  if(!grid)return;
+  if(yrLabel)yrLabel.textContent=pickerYear;
+  const SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const currentM=document.getElementById('month-select').value;
-  const today=new Date();
+  const currentY=parseInt(document.getElementById('year-select').value);
+  const r=16,circ=2*Math.PI*r;
   let html='';
-  MKEYS.forEach((mk,mi)=>{
-    const mdata=mk===currentM?data:(parseLocalBudget(`${mk}_${y}`)||{});
-    const dailySpend={};
-    function addSpend(ds,amt){if(!ds||!parseFloat(amt))return;dailySpend[ds]=(dailySpend[ds]||0)+parseFloat(amt);}
-    (mdata.bills||[]).forEach(r=>addSpend(r.date,r.amount));
-    (mdata.subs||[]).forEach(r=>addSpend(r.date,r.amount));
-    (mdata.expenses||[]).forEach(g=>(g.items||[]).forEach(item=>addSpend(item.date,item.amount)));
-    const monthlyBudget=(mdata.income||[]).reduce((s,r)=>s+(parseFloat(r.budget)||0),0);
-    const daysInMonth=new Date(y,mi+1,0).getDate();
-    const dailyBudget=monthlyBudget>0?monthlyBudget/daysInMonth:0;
-    const firstDow=new Date(y,mi,1).getDay();
-    let m=`<div class="yr-month"><div class="yr-month-name">${MNAMES[mi]}</div><div class="yr-cal">`;
-    ['S','M','T','W','T','F','S'].forEach(d=>{m+=`<div class="yr-dh">${d}</div>`});
-    for(let i=0;i<firstDow;i++)m+=`<div class="yr-dot-wrap"><div class="yr-dot yr-dot-other"></div></div>`;
-    for(let d=1;d<=daysInMonth;d++){
-      const ds=`${y}-${String(mi+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const spend=dailySpend[ds]||0;
-      const isToday=today.getFullYear()===y&&today.getMonth()===mi&&today.getDate()===d;
-      let style;
-      if(spend>0){
-        const ratio=dailyBudget>0?Math.min(spend/dailyBudget,1):0.5;
-        const deg=Math.round(ratio*360);
-        const over=dailyBudget>0&&spend>dailyBudget;
-        const fill=over?'#f4d4d7':'#cad07d';
-        style=`background:conic-gradient(${fill} 0deg ${deg}deg,rgba(176,143,122,0.15) ${deg}deg 360deg)`;
-      }else{
-        style='background:rgba(176,143,122,0.12)';
-      }
-      m+=`<div class="yr-dot-wrap"><div class="yr-dot${isToday?' yr-dot-today':''}" style="${style}"></div></div>`;
+  MONTHS.forEach((mname,mi)=>{
+    const isSelected=mname===currentM&&pickerYear===currentY;
+    const {budget,spent}=getMonthStats(mname,pickerYear);
+    let svgInner='';
+    if(budget>0){
+      const ratio=Math.min(spent/budget,1);
+      const over=spent>budget;
+      const fill=over?'#f4d4d7':'#cad07d';
+      const dash=ratio*circ;
+      const pct=over?'over':Math.round((1-spent/budget)*100)+'%';
+      svgInner=`<circle cx="22" cy="22" r="${r}" fill="none" stroke="rgba(176,143,122,0.18)" stroke-width="4.5"/>
+        <circle cx="22" cy="22" r="${r}" fill="none" stroke="${fill}" stroke-width="4.5"
+          stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 22 22)"/>
+        <text x="22" y="26" text-anchor="middle" font-family="Fraunces,serif" font-size="7.5" fill="var(--chocolate)">${pct}</text>`;
+    }else{
+      svgInner=`<circle cx="22" cy="22" r="${r}" fill="none" stroke="rgba(176,143,122,0.18)" stroke-width="4.5"/>
+        <text x="22" y="26" text-anchor="middle" font-family="Fraunces,serif" font-size="9" fill="rgba(176,143,122,0.5)">—</text>`;
     }
-    m+=`</div></div>`;
-    html+=m;
+    html+=`<div class="mp-cell${isSelected?' mp-selected':''}" onclick="selectPickerMonth('${mname}')">
+      <svg width="44" height="44" viewBox="0 0 44 44">${svgInner}</svg>
+      <span class="mp-cell-name">${SHORT[mi]}</span>
+    </div>`;
   });
-  body.innerHTML=html;
+  grid.innerHTML=html;
 }
-function toggleYearlyCalendar(){
-  const wrap=document.getElementById('yr-body-wrap');
-  const chev=document.getElementById('yr-chev');
-  if(!wrap)return;
-  wrap.classList.toggle('collapsed');
-  if(chev)chev.textContent=wrap.classList.contains('collapsed')?'▸':'▾';
+function selectPickerMonth(mname){
+  document.getElementById('month-select').value=mname;
+  document.getElementById('year-select').value=pickerYear;
+  updateMonthPickerDisplay();
+  closeMonthPicker();
+  switchMonth();
 }
+function updateMonthPickerDisplay(){
+  const el=document.getElementById('mp-display');
+  if(el)el.textContent=`${document.getElementById('month-select').value} ${document.getElementById('year-select').value}`;
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#month-picker-popup')&&!e.target.closest('#month-picker-btn'))closeMonthPicker();
+});
 function renderAll(){
-  renderIncome();renderBills();renderExpenses();renderSubs();renderYearlyCalendar();
+  renderIncome();renderBills();renderExpenses();renderSubs();updateMonthPickerDisplay();
   const goalInput=document.getElementById('savings-goal');
   if(goalInput)goalInput.value=data.savingsGoal||'';
   refreshMonthLabel();updateStats();updateCharts();refreshSyncTimestamp();
