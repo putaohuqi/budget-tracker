@@ -456,7 +456,6 @@ body::after{
   padding:.08rem .68rem;
 }
 .month-selector label,
-.sync-pill-label,
 #sync-status{
   font-size:.62rem;
   font-weight:800;
@@ -474,31 +473,6 @@ body::after{
   outline:none;
   cursor:pointer;
 }
-.sync-pill{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  gap:.02rem;
-  padding-right:.08rem;
-  line-height:.98;
-}
-.sync-pill strong{
-  font-family:'Fraunces',serif;
-  font-size:.76rem;
-  color:var(--sage-deep);
-  line-height:1;
-}
-#savings-goal{
-  width:58px;
-  padding:0;
-  border:none;
-  background:transparent;
-  color:var(--sage-deep);
-  font:700 .84rem 'Fraunces',serif;
-  outline:none;
-  box-shadow:none;
-}
-#savings-goal::placeholder{color:rgba(var(--moss-rgb),0.46)}
 #sync-btn{
   border:none;
   border-radius:999px;
@@ -1202,31 +1176,18 @@ input[type=checkbox]{
     font-size:.72rem;
   }
   .sync-actions{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) auto;
-    grid-template-areas:
-      "goal button"
-      "status status";
-    align-items:center;
-    gap:.12rem .28rem;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:.14rem;
     padding:.16rem .42rem;
   }
-  .sync-pill{
-    grid-area:goal;
-    width:100%;
-    min-width:0;
-    align-items:flex-start;
-    gap:0;
-    padding-right:0;
-  }
   #sync-btn{
-    grid-area:button;
-    justify-self:end;
+    align-self:flex-end;
     padding:.34rem .58rem;
     font-size:.62rem;
   }
   .sync-status-stack{
-    grid-area:status;
     width:100%;
     min-width:0;
     align-items:flex-start;
@@ -1243,9 +1204,6 @@ input[type=checkbox]{
     line-height:1.15;
     text-align:left;
     white-space:normal;
-  }
-  #savings-goal{
-    width:44px;
   }
   #auth-user-email{max-width:92px}
   table{font-size:.72rem}
@@ -1325,10 +1283,6 @@ input[type=checkbox]{
     </div>
 
     <div class="sync-actions">
-      <div class="sync-pill">
-        <span class="sync-pill-label">Savings Goal</span>
-        <input id="savings-goal" type="number" inputmode="decimal" min="0" step="0.01" placeholder="$0" oninput="updateSavingsGoal(this.value)" onblur="formatAmountInput(this)"/>
-      </div>
       <button id="sync-btn" onclick="manualSave()">Save</button>
       <div class="sync-status-stack">
         <span id="sync-status" data-tone="neutral">Local only.</span>
@@ -1639,7 +1593,7 @@ function fillEmpty(){
         amount:pickValue(row,'amount','actual','budget')
       }))
     : emptySection('subs');
-  if(typeof data.savingsGoal==='undefined'||data.savingsGoal===null)data.savingsGoal='';
+  if('savingsGoal' in data)delete data.savingsGoal;
 }
 
 function getBudgetDocRef(){
@@ -1681,17 +1635,12 @@ async function getInheritedSubs(){
 }
 
 function hasMeaningfulData(payload){
-  return !!(payload&&payload.savingsGoal) || BUDGET_SECTIONS.some(sec=>
+  return BUDGET_SECTIONS.some(sec=>
     Array.isArray(payload[sec]) &&
     payload[sec].some(row=>
       Object.values(row||{}).some(value=>value!==''&&value!==false&&value!=null)
     )
   );
-}
-
-function updateSavingsGoal(value){
-  data.savingsGoal=value;
-  saveData();
 }
 
 function refreshMonthLabel(){
@@ -2051,8 +2000,6 @@ document.addEventListener('click',function(e){
 });
 function renderAll(){
   renderIncome();renderBills();renderExpenses();renderSubs();updateMonthPickerDisplay();
-  const goalInput=document.getElementById('savings-goal');
-  if(goalInput)goalInput.value=data.savingsGoal||'';
   refreshMonthLabel();updateStats();updateCharts();refreshSyncTimestamp();
 }
 
