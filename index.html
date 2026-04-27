@@ -1986,7 +1986,13 @@ function renderMonthPicker(){
 }
 function selectPickerMonth(mname){
   document.getElementById('month-select').value=mname;
-  document.getElementById('year-select').value=pickerYear;
+  const ys=document.getElementById('year-select');
+  if(!ys.querySelector(`option[value="${pickerYear}"]`)){
+    const opt=document.createElement('option');
+    opt.value=pickerYear;opt.textContent=pickerYear;
+    ys.appendChild(opt);
+  }
+  ys.value=pickerYear;
   updateMonthPickerDisplay();
   closeMonthPicker();
   switchMonth();
