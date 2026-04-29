@@ -100,38 +100,38 @@
   --blush-soft-rgb:221,232,243;
 }
 :root[data-palette="summer"]{
-  --sand:#EDECDB;
-  --sand-rgb:237,236,219;
-  --mocha:#E5A9A9;
-  --mocha-rgb:229,169,169;
-  --chocolate:#E6748E;
-  --chocolate-rgb:230,116,142;
-  --espresso:#C0536D;
-  --baby-pink:#FBF8F6;
-  --baby-pink-rgb:251,248,246;
-  --blush:#A7BCBD;
-  --blush-rgb:167,188,189;
+  --sand:#E5A9A9;
+  --sand-rgb:229,169,169;
+  --mocha:#E6748E;
+  --mocha-rgb:230,116,142;
+  --chocolate:#C0536D;
+  --chocolate-rgb:192,83,109;
+  --espresso:#9A3A52;
+  --baby-pink:#FEF8F9;
+  --baby-pink-rgb:254,248,249;
+  --blush:#C5D8D9;
+  --blush-rgb:197,216,217;
   --dusty-rose:#6BB1AD;
   --dusty-rose-rgb:107,177,173;
   --mauve:#4E8E8A;
   --mauve-rgb:78,142,138;
-  --light-sage:#F5E8E8;
-  --light-sage-rgb:245,232,232;
-  --meadow:#F2F1E6;
-  --meadow-rgb:242,241,230;
+  --light-sage:#F5EAEA;
+  --light-sage-rgb:245,234,234;
+  --meadow:#EFF5F5;
+  --meadow-rgb:239,245,245;
   --olive:#A7BCBD;
   --moss:#6BB1AD;
   --moss-rgb:107,177,173;
-  --bg:#FAF8F4;
-  --bg-rgb:250,248,244;
-  --paper:#EDECDB;
-  --paper-rgb:237,236,219;
-  --paper-soft:#F2F1E6;
-  --paper-soft-rgb:242,241,230;
-  --paper-blush:#F5EAEA;
-  --paper-blush-rgb:245,234,234;
-  --blush-soft:#EEE4E4;
-  --blush-soft-rgb:238,228,228;
+  --bg:#FDF8F8;
+  --bg-rgb:253,248,248;
+  --paper:#FEF9F9;
+  --paper-rgb:254,249,249;
+  --paper-soft:#FAF4F4;
+  --paper-soft-rgb:250,244,244;
+  --paper-blush:#F5ECEC;
+  --paper-blush-rgb:245,236,236;
+  --blush-soft:#EFE6E6;
+  --blush-soft-rgb:239,230,230;
 }
 :root[data-palette="autumn"]{
   --sand:#C3C0AA;
@@ -1463,7 +1463,7 @@ const db = firebase.firestore();
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const BUDGET_SECTIONS=['income','bills','expenses','subs'];
 const DEFAULT_EXPENSE_CATEGORIES=['entertainment','dining out','beauty','transportation','tech','stationery','grocery','clothes','pet','home','education'];
-const PALETTE_THEME_COLORS={winter:'#F7FAFC',summer:'#EDECDB',autumn:'#EFEADA'};
+const PALETTE_THEME_COLORS={winter:'#F7FAFC',summer:'#FEF9F9',autumn:'#EFEADA'};
 let currentKey='';
 let data={};
 let currentUser=null;
@@ -1486,9 +1486,9 @@ function monthPickerSeasonColors(monthName){
   }
   if(palette==='summer'){
     return {
-      fill:'#6BB1AD',
-      track:'rgba(229,169,169,0.2)',
-      empty:'rgba(229,169,169,0.42)'
+      fill:'#E5A9A9',
+      track:'rgba(230,116,142,0.2)',
+      empty:'rgba(230,116,142,0.42)'
     };
   }
   return {
