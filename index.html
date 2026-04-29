@@ -100,38 +100,38 @@
   --blush-soft-rgb:221,232,243;
 }
 :root[data-palette="summer"]{
-  --sand:#FFF1B9;
-  --sand-rgb:255,241,185;
-  --mocha:#C49A6C;
-  --mocha-rgb:196,154,108;
-  --chocolate:#7A512B;
-  --chocolate-rgb:122,81,43;
-  --espresso:#5E3B1A;
-  --baby-pink:#FFFDF4;
-  --baby-pink-rgb:255,253,244;
-  --blush:#D2E8F5;
-  --blush-rgb:210,232,245;
-  --dusty-rose:#76B9E2;
-  --dusty-rose-rgb:118,185,226;
-  --mauve:#78A2D2;
-  --mauve-rgb:120,162,210;
-  --light-sage:#FFF4C5;
-  --light-sage-rgb:255,244,197;
-  --meadow:#FFF7D1;
-  --meadow-rgb:255,247,209;
-  --olive:#A8CEF0;
-  --moss:#8D683F;
-  --moss-rgb:141,104,63;
-  --bg:#FFFAE3;
-  --bg-rgb:255,250,227;
-  --paper:#FFFDF4;
-  --paper-rgb:255,253,244;
-  --paper-soft:#FFFAE3;
-  --paper-soft-rgb:255,250,227;
-  --paper-blush:#EAF5FB;
-  --paper-blush-rgb:234,245,251;
-  --blush-soft:#E3F1F9;
-  --blush-soft-rgb:227,241,249;
+  --sand:#EDECDB;
+  --sand-rgb:237,236,219;
+  --mocha:#E5A9A9;
+  --mocha-rgb:229,169,169;
+  --chocolate:#E6748E;
+  --chocolate-rgb:230,116,142;
+  --espresso:#C0536D;
+  --baby-pink:#FBF8F6;
+  --baby-pink-rgb:251,248,246;
+  --blush:#A7BCBD;
+  --blush-rgb:167,188,189;
+  --dusty-rose:#6BB1AD;
+  --dusty-rose-rgb:107,177,173;
+  --mauve:#4E8E8A;
+  --mauve-rgb:78,142,138;
+  --light-sage:#F5E8E8;
+  --light-sage-rgb:245,232,232;
+  --meadow:#F2F1E6;
+  --meadow-rgb:242,241,230;
+  --olive:#A7BCBD;
+  --moss:#6BB1AD;
+  --moss-rgb:107,177,173;
+  --bg:#FAF8F4;
+  --bg-rgb:250,248,244;
+  --paper:#EDECDB;
+  --paper-rgb:237,236,219;
+  --paper-soft:#F2F1E6;
+  --paper-soft-rgb:242,241,230;
+  --paper-blush:#F5EAEA;
+  --paper-blush-rgb:245,234,234;
+  --blush-soft:#EEE4E4;
+  --blush-soft-rgb:238,228,228;
 }
 :root[data-palette="autumn"]{
   --sand:#C3C0AA;
@@ -1463,7 +1463,7 @@ const db = firebase.firestore();
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const BUDGET_SECTIONS=['income','bills','expenses','subs'];
 const DEFAULT_EXPENSE_CATEGORIES=['entertainment','dining out','beauty','transportation','tech','stationery','grocery','clothes','pet','home','education'];
-const PALETTE_THEME_COLORS={winter:'#F7FAFC',summer:'#FFFDF4',autumn:'#EFEADA'};
+const PALETTE_THEME_COLORS={winter:'#F7FAFC',summer:'#EDECDB',autumn:'#EFEADA'};
 let currentKey='';
 let data={};
 let currentUser=null;
@@ -1486,9 +1486,9 @@ function monthPickerSeasonColors(monthName){
   }
   if(palette==='summer'){
     return {
-      fill:'#FFF1B9',
-      track:'rgba(196,154,108,0.2)',
-      empty:'rgba(196,154,108,0.42)'
+      fill:'#6BB1AD',
+      track:'rgba(229,169,169,0.2)',
+      empty:'rgba(229,169,169,0.42)'
     };
   }
   return {
@@ -1623,12 +1623,19 @@ async function getInheritedSubs(){
       }
     }catch(e){}
     if(raw&&Array.isArray(raw.subs)&&raw.subs.some(r=>r.name)){
-      return raw.subs.map(r=>({
-        checked:false,
-        name:r.name||'',
-        date:r.date||'',
-        amount:pickValue(r,'amount','actual','budget')
-      }));
+      return raw.subs.map(r=>{
+        let newDate=r.date||'';
+        if(newDate){
+          const parts=newDate.split('-');
+          if(parts.length===3){
+            const day=parseInt(parts[2],10);
+            const daysInMonth=new Date(y,MONTHS.indexOf(m)+1,0).getDate();
+            const clampedDay=Math.min(day,daysInMonth);
+            newDate=`${y}-${String(MONTHS.indexOf(m)+1).padStart(2,'0')}-${String(clampedDay).padStart(2,'0')}`;
+          }
+        }
+        return{checked:false,name:r.name||'',date:newDate,amount:pickValue(r,'amount','actual','budget')};
+      });
     }
   }
   return null;
