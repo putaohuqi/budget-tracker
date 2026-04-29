@@ -100,38 +100,38 @@
   --blush-soft-rgb:221,232,243;
 }
 :root[data-palette="summer"]{
-  --sand:#E5A9A9;
-  --sand-rgb:229,169,169;
-  --mocha:#E6748E;
-  --mocha-rgb:230,116,142;
-  --chocolate:#C0536D;
-  --chocolate-rgb:192,83,109;
-  --espresso:#9A3A52;
-  --baby-pink:#FEF8F9;
-  --baby-pink-rgb:254,248,249;
-  --blush:#C5D8D9;
-  --blush-rgb:197,216,217;
-  --dusty-rose:#6BB1AD;
-  --dusty-rose-rgb:107,177,173;
-  --mauve:#4E8E8A;
-  --mauve-rgb:78,142,138;
-  --light-sage:#F5EAEA;
-  --light-sage-rgb:245,234,234;
-  --meadow:#EFF5F5;
-  --meadow-rgb:239,245,245;
-  --olive:#A7BCBD;
-  --moss:#6BB1AD;
-  --moss-rgb:107,177,173;
-  --bg:#FDF8F8;
-  --bg-rgb:253,248,248;
-  --paper:#FEF9F9;
-  --paper-rgb:254,249,249;
-  --paper-soft:#FAF4F4;
-  --paper-soft-rgb:250,244,244;
-  --paper-blush:#F5ECEC;
-  --paper-blush-rgb:245,236,236;
-  --blush-soft:#EFE6E6;
-  --blush-soft-rgb:239,230,230;
+  --sand:#F2E6B8;
+  --sand-rgb:242,230,184;
+  --mocha:#F1CCA6;
+  --mocha-rgb:241,204,166;
+  --chocolate:#F2BFB4;
+  --chocolate-rgb:242,191,180;
+  --espresso:#F28695;
+  --baby-pink:#FFF9F5;
+  --baby-pink-rgb:255,249,245;
+  --blush:#F2BFB4;
+  --blush-rgb:242,191,180;
+  --dusty-rose:#F28695;
+  --dusty-rose-rgb:242,134,149;
+  --mauve:#D8687A;
+  --mauve-rgb:216,104,122;
+  --light-sage:#FFF0E6;
+  --light-sage-rgb:255,240,230;
+  --meadow:#FFF8E8;
+  --meadow-rgb:255,248,232;
+  --olive:#F1CCA6;
+  --moss:#F28695;
+  --moss-rgb:242,134,149;
+  --bg:#FFF9F5;
+  --bg-rgb:255,249,245;
+  --paper:#FFFAF6;
+  --paper-rgb:255,250,246;
+  --paper-soft:#FFF5EE;
+  --paper-soft-rgb:255,245,238;
+  --paper-blush:#FFF0E8;
+  --paper-blush-rgb:255,240,232;
+  --blush-soft:#FFE8E8;
+  --blush-soft-rgb:255,232,232;
 }
 :root[data-palette="autumn"]{
   --sand:#C3C0AA;
@@ -1463,7 +1463,7 @@ const db = firebase.firestore();
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const BUDGET_SECTIONS=['income','bills','expenses','subs'];
 const DEFAULT_EXPENSE_CATEGORIES=['entertainment','dining out','beauty','transportation','tech','stationery','grocery','clothes','pet','home','education'];
-const PALETTE_THEME_COLORS={winter:'#F7FAFC',summer:'#FEF9F9',autumn:'#EFEADA'};
+const PALETTE_THEME_COLORS={winter:'#F7FAFC',summer:'#FFF9F5',autumn:'#EFEADA'};
 let currentKey='';
 let data={};
 let currentUser=null;
@@ -1486,9 +1486,9 @@ function monthPickerSeasonColors(monthName){
   }
   if(palette==='summer'){
     return {
-      fill:'#E5A9A9',
-      track:'rgba(230,116,142,0.2)',
-      empty:'rgba(230,116,142,0.42)'
+      fill:'#F28695',
+      track:'rgba(242,191,180,0.2)',
+      empty:'rgba(242,191,180,0.42)'
     };
   }
   return {
