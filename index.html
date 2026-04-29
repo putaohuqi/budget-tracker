@@ -802,6 +802,17 @@ body::after{
   display:none;
   width:340px;
 }
+@media(max-width:480px){
+  .month-picker-popup{
+    position:fixed;
+    top:auto;
+    bottom:1.5rem;
+    left:50%;
+    transform:translateX(-50%);
+    width:calc(100vw - 2rem);
+    max-width:340px;
+  }
+}
 .month-picker-popup.open{display:block}
 .mp-yr-nav{
   display:flex;align-items:center;justify-content:space-between;
